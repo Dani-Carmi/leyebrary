@@ -17,9 +17,9 @@ export default function TabLayout() {
         tabBarButton: HapticTab,
       }}>
       <Tabs.Screen
-        name="add"
+        name="search"
         options={{
-          tabBarIcon: ({ color }) => <Ionicons size={28} name="add-circle-outline" color={color} />,
+          tabBarIcon: ({ color }) => <Ionicons size={28} name="search" color={color} />,
         }}
       />
       <Tabs.Screen

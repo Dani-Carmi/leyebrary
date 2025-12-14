@@ -7,7 +7,7 @@ import { ThemedView } from '@/components/themed-view';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { useThemeColor } from '@/hooks/use-theme-color';
 
-export default function AddBookScreen() {
+export default function SearchBookScreen() {
   const [searchQuery, setSearchQuery] = useState('');
   const [results, setResults] = useState<any[]>([]);
   const backgroundColor = useThemeColor({}, 'background');
