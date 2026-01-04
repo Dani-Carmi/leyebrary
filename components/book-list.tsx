@@ -1,4 +1,6 @@
+import { Book } from "@/utils/types";
 import { Ionicons } from "@expo/vector-icons";
+import { useRouter } from "expo-router";
 import { FC } from "react";
 import {
   ActivityIndicator,
@@ -14,7 +16,7 @@ import BookListItem from "./book-list-item";
 type Props = {
   query: string;
   setQuery: (query: string) => void;
-  books: any[];
+  books: Book[];
   loading: boolean;
   error: string | null;
   search: () => void;
@@ -30,6 +32,7 @@ export const BookList: FC<Props> = ({
   search,
   clearSearch,
 }) => {
+  const router = useRouter();
   return (
     <>
       <View style={styles.searchContainer}>
@@ -90,7 +93,17 @@ export const BookList: FC<Props> = ({
       {books.length > 0 && (
         <FlatList
           data={books}
-          renderItem={({ item }) => <BookListItem item={item} />}
+          renderItem={({ item }) => (
+            <BookListItem
+              item={item}
+              onPress={() =>
+                router.push({
+                  pathname: `/[book]`,
+                  params: { book: item.id, bookData: JSON.stringify(item) },
+                })
+              }
+            />
+          )}
           keyExtractor={(item) => item.id}
           contentContainerStyle={styles.listContent}
           showsVerticalScrollIndicator={false}

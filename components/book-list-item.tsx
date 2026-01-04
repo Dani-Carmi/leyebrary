@@ -1,11 +1,17 @@
 import { Book } from "@/utils/types";
 import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
-export default function BookListItem({ item }: { item: Book }) {
+export default function BookListItem({
+  item,
+  onPress,
+}: {
+  item: Book;
+  onPress: () => void;
+}) {
   const { volumeInfo } = item;
 
   return (
-    <TouchableOpacity style={styles.bookItem}>
+    <TouchableOpacity style={styles.bookItem} onPress={onPress}>
       {volumeInfo.imageLinks?.thumbnail ? (
         <Image
           source={{ uri: volumeInfo.imageLinks.thumbnail }}
