@@ -1,14 +1,54 @@
 import axios from "axios";
 import Constants from "expo-constants";
+import { Platform } from "react-native";
 import { GoogleBooksApiResponse } from "../utils/types";
 
 const BASE_URL = Constants.expoConfig?.extra?.googleBooksApiUrl;
 const API_KEY = Constants.expoConfig?.extra?.googleBooksApiKey;
 
+// JSONP helper for web platform to avoid CORS
+const fetchWithJsonp = (url: string): Promise<GoogleBooksApiResponse> => {
+  return new Promise((resolve, reject) => {
+    const callbackName = `jsonp_callback_${Date.now()}`;
+    const script = document.createElement("script");
+
+    // @ts-ignore
+    window[callbackName] = (data: GoogleBooksApiResponse) => {
+      // @ts-ignore
+      delete window[callbackName];
+      document.body.removeChild(script);
+      resolve(data);
+    };
+
+    script.src = `${url}&callback=${callbackName}`;
+    script.onerror = () => {
+      // @ts-ignore
+      delete window[callbackName];
+      document.body.removeChild(script);
+      reject(new Error("JSONP request failed"));
+    };
+
+    document.body.appendChild(script);
+  });
+};
+
 export const searchBooks = async (
   query: string
 ): Promise<GoogleBooksApiResponse> => {
+  console.log("Searching books with query:", query);
+  console.log("BASE_URL:", BASE_URL);
+  console.log("API_KEY:", API_KEY);
+
   try {
+    // Use JSONP for web platform to avoid CORS issues
+    if (Platform.OS === "web") {
+      const url = `${BASE_URL}/volumes?q=${encodeURIComponent(query)}${
+        API_KEY ? `&key=${API_KEY}` : ""
+      }`;
+      return await fetchWithJsonp(url);
+    }
+
+    // Use axios for native platforms
     const response = await axios.get<GoogleBooksApiResponse>(
       `${BASE_URL}/volumes`,
       {
