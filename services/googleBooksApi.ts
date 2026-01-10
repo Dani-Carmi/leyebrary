@@ -35,10 +35,6 @@ const fetchWithJsonp = (url: string): Promise<GoogleBooksApiResponse> => {
 export const searchBooks = async (
   query: string
 ): Promise<GoogleBooksApiResponse> => {
-  console.log("Searching books with query:", query);
-  console.log("BASE_URL:", BASE_URL);
-  console.log("API_KEY:", API_KEY);
-
   try {
     // Use JSONP for web platform to avoid CORS issues
     if (Platform.OS === "web") {

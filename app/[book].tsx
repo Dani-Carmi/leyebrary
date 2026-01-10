@@ -1,7 +1,9 @@
 import { Book } from "@/utils/types";
 import { Stack, useLocalSearchParams } from "expo-router";
+import { useSQLiteContext } from "expo-sqlite";
 import { useState } from "react";
 import {
+  Button,
   Image,
   ScrollView,
   StyleSheet,
@@ -16,6 +18,54 @@ export default function BookDetailPage() {
   const book: Book = JSON.parse(bookData as string);
   const [isDescriptionExpanded, setIsDescriptionExpanded] = useState(false);
   const descriptionLength = (book?.volumeInfo?.description?.length ?? 300) / 2;
+
+  const db = useSQLiteContext();
+
+  const addBookToDatabase = async () => {
+    const {
+      title,
+      subtitle,
+      authors,
+      publisher,
+      publishedDate,
+      description,
+      pageCount,
+      categories,
+      imageLinks,
+    } = book.volumeInfo;
+
+    const result = await db.runAsync(
+      `INSERT INTO books (title, subtitle, authors, publisher, publishedDate, description, pageCount, categories, smallThumbnail, thumbnail) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+      [
+        title,
+        subtitle || null,
+        authors ? authors.join(", ") : null,
+        publisher || null,
+        publishedDate || null,
+        description || null,
+        pageCount || null,
+        categories ? categories.join(", ") : null,
+        imageLinks?.smallThumbnail || null,
+        imageLinks?.thumbnail || null,
+      ]
+    );
+
+    return result;
+  };
+
+  const handleAddBook = async () => {
+    try {
+      await addBookToDatabase();
+      alert(`Book added successfully!`);
+    } catch (error) {
+      console.error("Error adding book to database:", error);
+      alert(
+        `Failed to add book: ${
+          error instanceof Error ? error.message : "Unknown error"
+        }`
+      );
+    }
+  };
 
   return (
     <>
@@ -82,7 +132,6 @@ export default function BookDetailPage() {
                 )}
               </View>
             </View>
-
             <View style={styles.infoContainer}>
               <Text style={styles.title}>{book.volumeInfo.title}</Text>
 
@@ -122,6 +171,7 @@ export default function BookDetailPage() {
                 </View>
               )}
             </View>
+            <Button title="Aggiungi libro" onPress={handleAddBook} />
           </ScrollView>
         </SafeAreaView>
       </SafeAreaProvider>

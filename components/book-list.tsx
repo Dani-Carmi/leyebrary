@@ -5,10 +5,10 @@ import { FC } from "react";
 import {
   ActivityIndicator,
   FlatList,
+  Pressable,
   StyleSheet,
   Text,
   TextInput,
-  TouchableOpacity,
   View,
 } from "react-native";
 import BookListItem from "./book-list-item";
@@ -47,7 +47,7 @@ export const BookList: FC<Props> = ({
           autoCorrect={false}
           returnKeyType="search"
         />
-        <TouchableOpacity
+        <Pressable
           onPress={search}
           style={styles.searchButton}
           disabled={loading || !query.trim()}
@@ -57,11 +57,11 @@ export const BookList: FC<Props> = ({
             size={24}
             color={loading || !query.trim() ? "#666" : "#fff"}
           />
-        </TouchableOpacity>
+        </Pressable>
         {query.length > 0 && (
-          <TouchableOpacity onPress={clearSearch} style={styles.clearButton}>
+          <Pressable onPress={clearSearch} style={styles.clearButton}>
             <Text style={styles.clearButtonText}>×</Text>
-          </TouchableOpacity>
+          </Pressable>
         )}
       </View>
 
