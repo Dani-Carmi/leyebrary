@@ -170,8 +170,12 @@ export default function BookDetailPage() {
                   )}
                 </View>
               )}
+              <Button
+                color="#4caf50"
+                title="Aggiungi libro"
+                onPress={handleAddBook}
+              />
             </View>
-            <Button title="Aggiungi libro" onPress={handleAddBook} />
           </ScrollView>
         </SafeAreaView>
       </SafeAreaProvider>
@@ -208,6 +212,8 @@ const styles = StyleSheet.create({
   infoContainer: {
     padding: 30,
     maxWidth: 1080,
+    display: "flex",
+    flexDirection: "column",
   },
   title: {
     color: "#fff",
@@ -287,5 +293,12 @@ const styles = StyleSheet.create({
     color: "#8f8f8fff",
     marginTop: 8,
     fontStyle: "italic",
+  },
+  addButton: {
+    backgroundColor: "#4caf50",
+    paddingVertical: 12,
+    paddingHorizontal: 24,
+    borderRadius: 8,
+    alignItems: "center",
   },
 });
