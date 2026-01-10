@@ -1,13 +1,19 @@
 import { useDrizzleStudio } from "expo-drizzle-studio-plugin";
 import { Stack } from "expo-router";
-import * as SQLite from "expo-sqlite";
-import { SQLiteProvider } from "expo-sqlite";
+import { SQLiteProvider, useSQLiteContext } from "expo-sqlite";
 
-const db = SQLite.openDatabaseSync("booksdatabase.db");
-
-export default function RootLayout() {
+function RootLayoutContent() {
+  const db = useSQLiteContext();
   useDrizzleStudio(db);
 
+  return (
+    <Stack>
+      <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+    </Stack>
+  );
+}
+
+export default function RootLayout() {
   return (
     <SQLiteProvider
       databaseName="booksdatabase.db"
@@ -31,9 +37,7 @@ export default function RootLayout() {
       }}
       options={{ useNewConnection: false }}
     >
-      <Stack>
-        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-      </Stack>
+      <RootLayoutContent />
     </SQLiteProvider>
   );
 }
