@@ -30,7 +30,8 @@ export default function RootLayout() {
               pageCount INTEGER NULL,
               categories TEXT NULL,
               smallThumbnail TEXT NULL,
-              thumbnail TEXT NULL
+              thumbnail TEXT NULL,
+              status TEXT CHECK(status IN ('TO_READ', 'READING', 'READ')) DEFAULT 'TO_READ' NOT NULL
             );
             PRAGMA journal_mode=WAL;
           `);
