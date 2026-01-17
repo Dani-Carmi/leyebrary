@@ -35,7 +35,7 @@ export default function BookDetailPage() {
     } = book.volumeInfo;
 
     const result = await db.runAsync(
-      `INSERT INTO books (title, subtitle, authors, publisher, publishedDate, description, pageCount, categories, smallThumbnail, thumbnail) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+      `INSERT INTO books (title, subtitle, authors, publisher, publishedDate, description, pageCount, categories, smallThumbnail, thumbnail, status) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
       [
         title,
         subtitle || null,
@@ -47,9 +47,9 @@ export default function BookDetailPage() {
         categories ? categories.join(", ") : null,
         imageLinks?.smallThumbnail || null,
         imageLinks?.thumbnail || null,
-      ]
+        "TO_READ",
+      ],
     );
-
     return result;
   };
 
@@ -62,7 +62,7 @@ export default function BookDetailPage() {
       alert(
         `Failed to add book: ${
           error instanceof Error ? error.message : "Unknown error"
-        }`
+        }`,
       );
     }
   };
@@ -83,7 +83,7 @@ export default function BookDetailPage() {
                 source={{
                   uri: book.volumeInfo.imageLinks?.thumbnail?.replace(
                     "http://",
-                    "https://"
+                    "https://",
                   ),
                 }}
                 style={styles.coverImage}
@@ -154,7 +154,7 @@ export default function BookDetailPage() {
                       ? book.volumeInfo.description
                       : book.volumeInfo.description.substring(
                           0,
-                          descriptionLength
+                          descriptionLength,
                         ) + "..."}
                   </Text>
                   {book.volumeInfo.description.length > descriptionLength && (

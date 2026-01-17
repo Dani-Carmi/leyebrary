@@ -1,20 +1,21 @@
 import { StyleSheet, Text } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
+import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 import LibraryBookList from "@/components/library-book-list";
 
 export default function Index() {
   return (
-    <SafeAreaView style={styles.container}>
-      <Text style={styles.text}>Your books</Text>
-      <LibraryBookList />
-    </SafeAreaView>
+    <SafeAreaProvider>
+      <SafeAreaView style={styles.container}>
+        <LibraryBookList />
+      </SafeAreaView>
+    </SafeAreaProvider>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: "center",
+    justifyContent: "flex-start",
     alignItems: "center",
     backgroundColor: "#25292e",
   },

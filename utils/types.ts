@@ -29,3 +29,18 @@ export interface GoogleBooksApiResponse {
   totalItems: number;
   items?: Book[];
 }
+
+export interface DBBook {
+  id: string;
+  title: string;
+  subtitle?: string | null;
+  authors?: string | null; // Comma-separated string
+  publisher?: string | null;
+  publishedDate?: string | null;
+  description?: string | null;
+  pageCount?: number | null;
+  categories?: string | null; // Comma-separated string
+  smallThumbnail?: string | null;
+  thumbnail?: string | null;
+  status: BookStatus;
+}

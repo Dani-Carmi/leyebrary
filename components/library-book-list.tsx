@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useSQLiteContext } from "expo-sqlite";
-import { Book } from "@/utils/types";
+import { DBBook } from "@/utils/types";
 import {
   Text,
   ActivityIndicator,
@@ -13,12 +13,12 @@ import LibraryBookListItem from "./library-book-list-item";
 export default function LibraryBookList() {
   const db = useSQLiteContext();
   const [isLoading, setIsLoading] = useState(true);
-  const [books, setBooks] = useState<Book[]>([]);
+  const [books, setBooks] = useState<DBBook[]>([]);
 
   const loadBooks = async () => {
     try {
       const res = await db.getAllSync("SELECT * FROM books");
-      setBooks(res as Book[]);
+      setBooks(res as DBBook[]);
     } catch (error) {
       console.error("Error loading books from database:", error);
     } finally {

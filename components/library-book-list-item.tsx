@@ -1,20 +1,27 @@
-import { Book } from "@/utils/types";
-import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { DBBook } from "@/utils/types";
+import {
+  Image,
+  Pressable,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
 import { useRouter } from "expo-router";
 
-export default function LibraryBookListItem({ item }: { item: Book }) {
+export default function LibraryBookListItem({ item }: { item: DBBook }) {
   const router = useRouter();
-  const { volumeInfo } = item;
 
-  const handlePress = () => {
-    router.push(`/${item.id}`);
-  };
+  //TODO: Open book detail page on press
+  // const handlePress = () => {
+  //   router.push(`/${item.id}`);
+  // };
 
   return (
-    <TouchableOpacity style={styles.bookItem} onPress={handlePress}>
-      {volumeInfo.imageLinks?.thumbnail ? (
+    <Pressable style={styles.bookItem}>
+      {item.thumbnail ? (
         <Image
-          source={{ uri: volumeInfo.imageLinks.thumbnail }}
+          source={{ uri: item.thumbnail }}
           style={styles.thumbnail}
           resizeMode="cover"
         />
@@ -26,17 +33,15 @@ export default function LibraryBookListItem({ item }: { item: Book }) {
 
       <View style={styles.bookInfo}>
         <Text style={styles.title} numberOfLines={2}>
-          {volumeInfo.title}
+          {item.title}
         </Text>
-        {volumeInfo.authors && (
+        {item.authors && (
           <Text style={styles.authors} numberOfLines={1}>
-            {volumeInfo.authors.join(", ")}
+            {item.authors}
           </Text>
         )}
-        {volumeInfo.publishedDate && (
-          <Text style={styles.year}>
-            {volumeInfo.publishedDate.substring(0, 4)}
-          </Text>
+        {item.publishedDate && (
+          <Text style={styles.year}>{item.publishedDate.substring(0, 4)}</Text>
         )}
         {item.status && (
           <View style={styles.statusContainer}>
@@ -44,7 +49,7 @@ export default function LibraryBookListItem({ item }: { item: Book }) {
           </View>
         )}
       </View>
-    </TouchableOpacity>
+    </Pressable>
   );
 }
 
@@ -68,11 +73,9 @@ const styles = StyleSheet.create({
     borderRadius: 4,
   },
   bookItem: {
-    flexDirection: "row",
     backgroundColor: "#3a3f47",
     borderRadius: 8,
     padding: 12,
-    marginBottom: 12,
   },
   noImageText: {
     color: "#666",
@@ -91,7 +94,7 @@ const styles = StyleSheet.create({
   },
   title: {
     color: "#fff",
-    fontSize: 16,
+    fontSize: 34,
     fontWeight: "600",
     marginBottom: 4,
   },
