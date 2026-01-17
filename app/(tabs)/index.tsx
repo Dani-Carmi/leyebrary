@@ -1,14 +1,12 @@
-import { Link } from "expo-router";
 import { StyleSheet, Text } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import LibraryBookList from "@/components/library-book-list";
 
 export default function Index() {
   return (
     <SafeAreaView style={styles.container}>
-      <Text style={styles.text}>Edit app/index.tsx to edit this screen.</Text>
-      <Link href="/search" style={styles.button}>
-        Go to Search
-      </Link>
+      <Text style={styles.text}>Your books</Text>
+      <LibraryBookList />
     </SafeAreaView>
   );
 }

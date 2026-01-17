@@ -11,7 +11,7 @@ import {
   TextInput,
   View,
 } from "react-native";
-import BookListItem from "./book-list-item";
+import SearchBookListItem from "./search-book-list-item";
 
 type Props = {
   query: string;
@@ -23,7 +23,7 @@ type Props = {
   clearSearch: () => void;
 };
 
-export const BookList: FC<Props> = ({
+export const SearchBookList: FC<Props> = ({
   query,
   setQuery,
   books,
@@ -94,7 +94,7 @@ export const BookList: FC<Props> = ({
         <FlatList
           data={books}
           renderItem={({ item }) => (
-            <BookListItem
+            <SearchBookListItem
               item={item}
               onPress={() =>
                 router.push({

@@ -1,4 +1,4 @@
-import { BookList } from "@/components/book-list";
+import { SearchBookList } from "@/components/search-book-list";
 import { useBookSearch } from "@/hooks/useBookSearch";
 import { StyleSheet } from "react-native";
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
@@ -10,7 +10,7 @@ export default function SearchScreen() {
   return (
     <SafeAreaProvider>
       <SafeAreaView style={styles.container}>
-        <BookList
+        <SearchBookList
           query={query}
           setQuery={setQuery}
           books={books}

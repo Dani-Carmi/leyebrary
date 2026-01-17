@@ -1,17 +1,17 @@
 import { Book } from "@/utils/types";
 import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { useRouter } from "expo-router";
 
-export default function BookListItem({
-  item,
-  onPress,
-}: {
-  item: Book;
-  onPress: () => void;
-}) {
+export default function LibraryBookListItem({ item }: { item: Book }) {
+  const router = useRouter();
   const { volumeInfo } = item;
 
+  const handlePress = () => {
+    router.push(`/${item.id}`);
+  };
+
   return (
-    <TouchableOpacity style={styles.bookItem} onPress={onPress}>
+    <TouchableOpacity style={styles.bookItem} onPress={handlePress}>
       {volumeInfo.imageLinks?.thumbnail ? (
         <Image
           source={{ uri: volumeInfo.imageLinks.thumbnail }}
@@ -38,9 +38,27 @@ export default function BookListItem({
             {volumeInfo.publishedDate.substring(0, 4)}
           </Text>
         )}
+        {item.status && (
+          <View style={styles.statusContainer}>
+            <Text style={styles.status}>{formatStatus(item.status)}</Text>
+          </View>
+        )}
       </View>
     </TouchableOpacity>
   );
+}
+
+function formatStatus(status: string): string {
+  switch (status) {
+    case "TO_READ":
+      return "To Read";
+    case "READING":
+      return "Reading";
+    case "READ":
+      return "Read";
+    default:
+      return status;
+  }
 }
 
 const styles = StyleSheet.create({
@@ -85,5 +103,13 @@ const styles = StyleSheet.create({
   year: {
     color: "#888",
     fontSize: 12,
+  },
+  statusContainer: {
+    marginTop: 4,
+  },
+  status: {
+    color: "#1e90ff",
+    fontSize: 12,
+    fontWeight: "500",
   },
 });
