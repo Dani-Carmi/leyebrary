@@ -1,22 +1,7 @@
 import { DBBook } from "@/utils/types";
-import {
-  Image,
-  Pressable,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
-} from "react-native";
-import { useRouter } from "expo-router";
+import { Image, Pressable, StyleSheet, Text, View } from "react-native";
 
 export default function LibraryBookListItem({ item }: { item: DBBook }) {
-  const router = useRouter();
-
-  //TODO: Open book detail page on press
-  // const handlePress = () => {
-  //   router.push(`/${item.id}`);
-  // };
-
   return (
     <Pressable style={styles.bookItem}>
       {item.thumbnail ? (

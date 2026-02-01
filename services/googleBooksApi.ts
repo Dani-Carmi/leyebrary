@@ -33,7 +33,7 @@ const fetchWithJsonp = (url: string): Promise<GoogleBooksApiResponse> => {
 };
 
 export const searchBooks = async (
-  query: string
+  query: string,
 ): Promise<GoogleBooksApiResponse> => {
   try {
     // Use JSONP for web platform to avoid CORS issues
@@ -54,13 +54,14 @@ export const searchBooks = async (
         params: {
           q: query,
         },
-      }
+      },
     );
     return response.data;
   } catch (error) {
+    // eslint-disable-next-line
     if (axios.isAxiosError(error)) {
       throw new Error(
-        `Google Books API Error: ${error.response?.status} - ${error.response?.statusText}`
+        `Google Books API Error: ${error.response?.status} - ${error.response?.statusText}`,
       );
     }
     throw new Error(`Unexpected Error: ${error}`);
