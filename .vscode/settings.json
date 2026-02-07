@@ -5,11 +5,11 @@
     "source.fixAll.eslint": "explicit"
   },
   "workbench.colorCustomizations": {
-    "titleBar.activeBackground": "#7308d7",
+    "titleBar.activeBackground": "#150462",
     "titleBar.activeForeground": "#b0afaf",
-    "titleBar.inactiveBackground": "#5e05b0",
+    "titleBar.inactiveBackground": "#0f0247",
     "titleBar.inactiveForeground": "#b0afaf",
-    "sash.hoverBorder": "#7308d7"
+    "sash.hoverBorder": "#150462"
   },
   "jest.jestCommandLine": "yarn test",
   "jest.shell": {

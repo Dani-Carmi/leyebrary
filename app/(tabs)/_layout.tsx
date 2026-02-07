@@ -1,21 +1,10 @@
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { Tabs } from "expo-router";
+import { TabBar } from "../../components/tab bar/tabBar";
 
 export default function RootLayout() {
   return (
-    <Tabs
-      screenOptions={{
-        tabBarActiveTintColor: "#ffd33d",
-        headerStyle: {
-          backgroundColor: "#25292e",
-        },
-        headerShadowVisible: false,
-        headerTintColor: "#fff",
-        tabBarStyle: {
-          backgroundColor: "#25292e",
-        },
-      }}
-    >
+    <Tabs tabBar={(props) => <TabBar {...props} />}>
       <Tabs.Screen
         name="search"
         options={{

@@ -1,10 +1,32 @@
 import { useDrizzleStudio } from "expo-drizzle-studio-plugin";
 import { Stack } from "expo-router";
 import { SQLiteProvider, useSQLiteContext } from "expo-sqlite";
+import { useFonts } from "@expo-google-fonts/inter";
+import * as SplashScreen from "expo-splash-screen";
+import { InterFonts } from "@/utils/font";
+import { useEffect } from "react";
+
+// Keep the splash screen visible while fonts load
+SplashScreen.preventAutoHideAsync();
 
 function RootLayoutContent() {
   const db = useSQLiteContext();
   useDrizzleStudio(db);
+
+  const [fontsLoaded, fontError] = useFonts({
+    ...InterFonts(),
+  });
+
+  useEffect(() => {
+    if (fontsLoaded || fontError) {
+      // Hide splash screen once fonts are loaded or if there's an error
+      SplashScreen.hideAsync();
+    }
+  }, [fontsLoaded, fontError]);
+
+  if (!fontsLoaded && !fontError) {
+    return null;
+  }
 
   return (
     <Stack>

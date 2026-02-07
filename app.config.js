@@ -30,6 +30,14 @@ export default {
     plugins: [
       "expo-router",
       [
+        "expo-font",
+        {
+          fonts: [
+            "node_modules/@expo-google-fonts/inter/900Black/Inter_900Black.ttf",
+          ],
+        },
+      ],
+      [
         "expo-splash-screen",
         {
           image: "./assets/images/splash-icon.png",
