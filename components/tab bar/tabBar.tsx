@@ -43,6 +43,7 @@ export function TabBar({ state, descriptors, navigation }: BottomTabBarProps) {
             onLongPress={onLongPress}
             onPress={onPress}
             label={labelText}
+            isFocused={isFocused}
           />
         );
       })}
@@ -53,11 +54,13 @@ export function TabBar({ state, descriptors, navigation }: BottomTabBarProps) {
 const styles = StyleSheet.create({
   tabbar: {
     flexDirection: "row",
-    justifyContent: "space-around",
+    justifyContent: "center",
     alignItems: "center",
-    marginHorizontal: 80,
     position: "absolute",
     bottom: 50,
+    left: 0,
+    right: 0,
+    gap: 40,
   },
   tabtext: {
     textAlign: "center",
