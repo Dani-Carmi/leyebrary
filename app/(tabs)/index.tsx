@@ -16,22 +16,9 @@ export default function Index() {
 }
 
 const styles = StyleSheet.create({
-  gradient: {
-    flex: 1,
-  },
   container: {
     flex: 1,
     justifyContent: "flex-start",
     alignItems: "center",
-  },
-  text: {
-    color: "#fff",
-  },
-  button: {
-    backgroundColor: "#1e90ff",
-    padding: 10,
-    borderRadius: 5,
-    marginTop: 20,
-    color: "#fff",
   },
 });

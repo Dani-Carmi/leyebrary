@@ -2,6 +2,7 @@ import { SearchBookList } from "@/components/search-book-list";
 import { useBookSearch } from "@/hooks/useBookSearch";
 import Background from "@/components/background";
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
+import { StyleSheet } from "react-native";
 
 export default function SearchScreen() {
   const { query, setQuery, books, loading, error, search, clearSearch } =
@@ -10,7 +11,7 @@ export default function SearchScreen() {
   return (
     <SafeAreaProvider>
       <Background>
-        <SafeAreaView>
+        <SafeAreaView style={styles.container}>
           <SearchBookList
             query={query}
             setQuery={setQuery}
@@ -25,3 +26,11 @@ export default function SearchScreen() {
     </SafeAreaProvider>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    marginTop: 20,
+    paddingHorizontal: 16,
+  },
+});

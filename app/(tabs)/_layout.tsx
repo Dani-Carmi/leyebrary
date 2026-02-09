@@ -9,6 +9,7 @@ export default function RootLayout() {
         name="search"
         options={{
           title: "Search",
+          headerShown: false,
           tabBarIcon: ({ color, focused }) => (
             <Ionicons
               name={
@@ -24,6 +25,7 @@ export default function RootLayout() {
         name="index"
         options={{
           title: "Home",
+          headerShown: false,
           tabBarIcon: ({ color, focused }) => (
             <Ionicons
               name={focused ? "home-sharp" : "home-outline"}

@@ -10,6 +10,7 @@ import {
   Text,
   TextInput,
   View,
+  KeyboardAvoidingView,
 } from "react-native";
 import SearchBookListItem from "./search-book-list-item";
 
@@ -34,7 +35,55 @@ export const SearchBookList: FC<Props> = ({
 }) => {
   const router = useRouter();
   return (
-    <>
+    <KeyboardAvoidingView
+      style={styles.container}
+      behavior="padding"
+      keyboardVerticalOffset={20}
+    >
+      <View style={styles.contentContainer}>
+        {loading && (
+          <View style={styles.centerContent}>
+            <ActivityIndicator size="large" color="#fff" />
+            <Text style={styles.loadingText}>Searching...</Text>
+          </View>
+        )}
+        {error && (
+          <View style={styles.centerContent}>
+            <Text style={styles.errorText}>{error}</Text>
+          </View>
+        )}
+        {!loading && !error && books.length === 0 && query.length > 0 && (
+          <View style={styles.centerContent}>
+            <Text style={styles.emptyText}>No books found</Text>
+          </View>
+        )}
+        {!loading && !error && books.length === 0 && query.length === 0 && (
+          <View style={styles.centerContent}>
+            <Text style={styles.emptyText}>
+              Start typing to search for books
+            </Text>
+          </View>
+        )}
+        {books.length > 0 && (
+          <FlatList
+            data={books}
+            renderItem={({ item }) => (
+              <SearchBookListItem
+                item={item}
+                onPress={() =>
+                  router.push({
+                    pathname: `/[book]`,
+                    params: { book: item.id, bookData: JSON.stringify(item) },
+                  })
+                }
+              />
+            )}
+            keyExtractor={(item) => item.id}
+            contentContainerStyle={styles.listContent}
+            showsVerticalScrollIndicator={false}
+          />
+        )}
+      </View>
       <View style={styles.searchContainer}>
         <TextInput
           style={styles.searchInput}
@@ -64,64 +113,21 @@ export const SearchBookList: FC<Props> = ({
           </Pressable>
         )}
       </View>
-
-      {loading && (
-        <View style={styles.centerContent}>
-          <ActivityIndicator size="large" color="#fff" />
-          <Text style={styles.loadingText}>Searching...</Text>
-        </View>
-      )}
-
-      {error && (
-        <View style={styles.centerContent}>
-          <Text style={styles.errorText}>{error}</Text>
-        </View>
-      )}
-
-      {!loading && !error && books.length === 0 && query.length > 0 && (
-        <View style={styles.centerContent}>
-          <Text style={styles.emptyText}>No books found</Text>
-        </View>
-      )}
-
-      {!loading && !error && books.length === 0 && query.length === 0 && (
-        <View style={styles.centerContent}>
-          <Text style={styles.emptyText}>Start typing to search for books</Text>
-        </View>
-      )}
-
-      {books.length > 0 && (
-        <FlatList
-          data={books}
-          renderItem={({ item }) => (
-            <SearchBookListItem
-              item={item}
-              onPress={() =>
-                router.push({
-                  pathname: `/[book]`,
-                  params: { book: item.id, bookData: JSON.stringify(item) },
-                })
-              }
-            />
-          )}
-          keyExtractor={(item) => item.id}
-          contentContainerStyle={styles.listContent}
-          showsVerticalScrollIndicator={false}
-        />
-      )}
-    </>
+    </KeyboardAvoidingView>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#25292e",
+    marginBottom: 100,
+  },
+  contentContainer: {
+    flex: 1,
   },
   searchContainer: {
     flexDirection: "row",
     alignItems: "center",
-    paddingHorizontal: 16,
     paddingVertical: 12,
   },
   searchInput: {

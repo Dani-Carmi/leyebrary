@@ -23,6 +23,7 @@ export function TabBarBtn({
       duration: 300,
       useNativeDriver: false,
     }).start();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isFocused]);
 
   const divFillColor = animatedValue.interpolate({
@@ -59,7 +60,7 @@ const style = StyleSheet.create({
   divOuter: {
     borderColor: "#ffffff",
     borderWidth: 1,
-    width: 120,
+    width: 140,
     height: 50,
     alignItems: "center",
     justifyContent: "center",
@@ -67,7 +68,7 @@ const style = StyleSheet.create({
   divInner: {
     backgroundColor: "#ffffff",
     borderWidth: 1,
-    width: 110,
+    width: 130,
     height: 40,
     alignItems: "center",
     justifyContent: "center",

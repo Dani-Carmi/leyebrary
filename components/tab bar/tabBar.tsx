@@ -54,18 +54,11 @@ export function TabBar({ state, descriptors, navigation }: BottomTabBarProps) {
 const styles = StyleSheet.create({
   tabbar: {
     flexDirection: "row",
-    justifyContent: "center",
-    alignItems: "center",
+    justifyContent: "space-between",
     position: "absolute",
     bottom: 50,
     left: 0,
     right: 0,
-    gap: 40,
-  },
-  tabtext: {
-    textAlign: "center",
-    fontSize: 16,
-    fontWeight: "700",
-    color: "#fff",
+    paddingHorizontal: 20,
   },
 });
