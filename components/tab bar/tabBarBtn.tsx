@@ -1,5 +1,5 @@
 import { PlatformPressable } from "@react-navigation/elements";
-import { StyleSheet, Text, Animated, View } from "react-native";
+import { StyleSheet, Animated } from "react-native";
 import { useEffect, useRef } from "react";
 
 type TabBarBtnProps = {

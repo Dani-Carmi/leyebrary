@@ -98,14 +98,25 @@ export const SearchBookList: FC<Props> = ({
         />
         <Pressable
           onPress={search}
-          style={styles.searchButton}
+          style={({ pressed }) => [
+            styles.searchButton,
+            pressed && styles.searchButtonPressed,
+          ]}
           disabled={loading || !query.trim()}
         >
-          <Ionicons
-            name="search"
-            size={24}
-            color={loading || !query.trim() ? "#666" : "#fff"}
-          />
+          {({ pressed }) => (
+            <Ionicons
+              name="search"
+              size={24}
+              color={
+                loading || !query.trim()
+                  ? "#e8e8e8"
+                  : pressed
+                    ? "#021d3a"
+                    : "#fff"
+              }
+            />
+          )}
         </Pressable>
         {query.length > 0 && (
           <Pressable onPress={clearSearch} style={styles.clearButton}>
@@ -132,19 +143,22 @@ const styles = StyleSheet.create({
   },
   searchInput: {
     flex: 1,
-    backgroundColor: "#3a3f47",
+    borderColor: "#fff",
+    borderWidth: 1,
     color: "#fff",
     padding: 12,
-    borderRadius: 8,
     fontSize: 16,
   },
   searchButton: {
     marginLeft: 8,
     padding: 8,
-    backgroundColor: "#3a3f47",
-    borderRadius: 8,
+    borderColor: "#fff",
+    borderWidth: 1,
     justifyContent: "center",
     alignItems: "center",
+  },
+  searchButtonPressed: {
+    backgroundColor: "#fff",
   },
   clearButton: {
     marginLeft: 8,
