@@ -33,7 +33,7 @@ export default function LibraryBookList() {
 
   if (isLoading) {
     return (
-      <View style={styles.centerContainer}>
+      <View>
         <ActivityIndicator size="large" color="#1e90ff" />
       </View>
     );
@@ -41,10 +41,8 @@ export default function LibraryBookList() {
 
   if (books.length === 0) {
     return (
-      <View style={styles.centerContainer}>
-        <Text style={styles.emptyText}>
-          Your library is empty. Start adding some books!
-        </Text>
+      <View>
+        <Text>Your library is empty. Start adding some books!</Text>
       </View>
     );
   }
@@ -54,24 +52,7 @@ export default function LibraryBookList() {
       data={books}
       renderItem={({ item }) => <LibraryBookListItem item={item} />}
       keyExtractor={(item) => item.id}
-      contentContainerStyle={styles.listContainer}
+      style={{ marginBottom: 100 }}
     />
   );
 }
-
-const styles = StyleSheet.create({
-  centerContainer: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    padding: 20,
-  },
-  emptyText: {
-    color: "#bbb",
-    fontSize: 16,
-    textAlign: "center",
-  },
-  listContainer: {
-    padding: 16,
-  },
-});

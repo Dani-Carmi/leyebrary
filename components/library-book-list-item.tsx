@@ -61,6 +61,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#3a3f47",
     borderRadius: 8,
     padding: 12,
+    marginBottom: 20,
   },
   noImageText: {
     color: "#666",

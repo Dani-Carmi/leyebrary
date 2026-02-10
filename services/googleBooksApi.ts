@@ -6,7 +6,6 @@ import { GoogleBooksApiResponse } from "../utils/types";
 const BASE_URL = Constants.expoConfig?.extra?.googleBooksApiUrl;
 const API_KEY = Constants.expoConfig?.extra?.googleBooksApiKey;
 
-// JSONP helper for web platform to avoid CORS
 const fetchWithJsonp = (url: string): Promise<GoogleBooksApiResponse> => {
   return new Promise((resolve, reject) => {
     const callbackName = `jsonp_callback_${Date.now()}`;
@@ -44,7 +43,6 @@ export const searchBooks = async (
       return await fetchWithJsonp(url);
     }
 
-    // Use axios for native platforms
     const response = await axios.get<GoogleBooksApiResponse>(
       `${BASE_URL}/volumes`,
       {
@@ -53,6 +51,7 @@ export const searchBooks = async (
         },
         params: {
           q: query,
+          maxResults: 40,
         },
       },
     );
