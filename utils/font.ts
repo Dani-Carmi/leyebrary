@@ -1,9 +1,15 @@
 // Only import the font weights actually used in your app
 import { Inter_400Regular } from "@expo-google-fonts/inter/400Regular";
+import { Inter_600SemiBold } from "@expo-google-fonts/inter/600SemiBold";
+import { Inter_700Bold } from "@expo-google-fonts/inter/700Bold";
+import { Inter_400Regular_Italic } from "@expo-google-fonts/inter/400Regular_Italic";
 
 export const InterFonts = () => {
   return {
     Inter_400Regular,
+    Inter_600SemiBold,
+    Inter_700Bold,
+    Inter_400Regular_Italic,
   };
 };
 

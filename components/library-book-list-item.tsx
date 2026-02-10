@@ -1,5 +1,6 @@
 import { DBBook } from "@/utils/types";
 import { Image, Pressable, StyleSheet, Text, View } from "react-native";
+import StatusBadge from "./statusBadge";
 
 export default function LibraryBookListItem({ item }: { item: DBBook }) {
   return (
@@ -28,27 +29,14 @@ export default function LibraryBookListItem({ item }: { item: DBBook }) {
         {item.publishedDate && (
           <Text style={styles.year}>{item.publishedDate.substring(0, 4)}</Text>
         )}
-        {item.status && (
-          <View style={styles.statusContainer}>
-            <Text style={styles.status}>{formatStatus(item.status)}</Text>
-          </View>
-        )}
       </View>
+      {item.status && (
+        <View style={styles.statusContainer}>
+          <StatusBadge status={item.status} />
+        </View>
+      )}
     </Pressable>
   );
-}
-
-function formatStatus(status: string): string {
-  switch (status) {
-    case "TO_READ":
-      return "To Read";
-    case "READING":
-      return "Reading";
-    case "READ":
-      return "Read";
-    default:
-      return status;
-  }
 }
 
 const styles = StyleSheet.create({
@@ -58,10 +46,12 @@ const styles = StyleSheet.create({
     borderRadius: 4,
   },
   bookItem: {
-    backgroundColor: "#3a3f47",
-    borderRadius: 8,
+    flexDirection: "row",
+    backgroundColor: "#11132ab4",
+    borderColor: "#fff",
+    borderWidth: 1,
     padding: 12,
-    marginBottom: 20,
+    marginBottom: 12,
   },
   noImageText: {
     color: "#666",
@@ -79,22 +69,27 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   title: {
+    fontFamily: "Inter_700Bold",
     color: "#fff",
-    fontSize: 34,
+    fontSize: 18,
     fontWeight: "600",
     marginBottom: 4,
   },
   authors: {
+    fontFamily: "Inter_400Regular",
     color: "#bbb",
-    fontSize: 14,
+    fontSize: 16,
     marginBottom: 2,
   },
   year: {
+    fontFamily: "Inter_400Regular_Italic",
     color: "#888",
     fontSize: 12,
   },
   statusContainer: {
-    marginTop: 4,
+    marginBottom: 4,
+    marginLeft: 12,
+    alignSelf: "flex-end",
   },
   status: {
     color: "#1e90ff",
