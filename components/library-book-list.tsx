@@ -29,7 +29,7 @@ export default function LibraryBookList() {
   useEffect(() => {
     loadBooks();
     //eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [books]);
 
   if (isLoading) {
     return (
