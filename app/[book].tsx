@@ -1,11 +1,10 @@
 import SearchBookItemDetails from "@/components/searchBookItemDetails";
 import { Book, BookStatus } from "@/utils/types";
-import { Stack, useLocalSearchParams } from "expo-router";
+import { useLocalSearchParams } from "expo-router";
 import { useSQLiteContext } from "expo-sqlite";
 import { StyleSheet } from "react-native";
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 import { useToast } from "@/components/toast";
-import { red } from "react-native-reanimated/lib/typescript/Colors";
 
 export default function BookDetailPage() {
   const { bookData } = useLocalSearchParams();
@@ -62,22 +61,14 @@ export default function BookDetailPage() {
   };
 
   return (
-    <>
-      <Stack.Screen
-        options={{
-          title: book.volumeInfo.title,
-          headerShown: false,
-        }}
-      />
-      <SafeAreaProvider>
-        <SafeAreaView style={styles.container}>
-          <SearchBookItemDetails
-            book={book}
-            onAddBook={(status) => handleAddBook(status)}
-          />
-        </SafeAreaView>
-      </SafeAreaProvider>
-    </>
+    <SafeAreaProvider>
+      <SafeAreaView style={styles.container}>
+        <SearchBookItemDetails
+          book={book}
+          onAddBook={(status) => handleAddBook(status)}
+        />
+      </SafeAreaView>
+    </SafeAreaProvider>
   );
 }
 
