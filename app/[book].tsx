@@ -1,17 +1,20 @@
 import SearchBookItemDetails from "@/components/searchBookItemDetails";
-import { Book } from "@/utils/types";
+import { Book, BookStatus } from "@/utils/types";
 import { Stack, useLocalSearchParams } from "expo-router";
 import { useSQLiteContext } from "expo-sqlite";
 import { StyleSheet } from "react-native";
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
+import { useToast } from "@/components/toast";
+import { red } from "react-native-reanimated/lib/typescript/Colors";
 
 export default function BookDetailPage() {
   const { bookData } = useLocalSearchParams();
   const book: Book = JSON.parse(bookData as string);
 
   const db = useSQLiteContext();
+  const { showToast } = useToast();
 
-  const addBookToDatabase = async () => {
+  const addBookToDatabase = async (status: BookStatus) => {
     const {
       title,
       subtitle,
@@ -37,22 +40,23 @@ export default function BookDetailPage() {
         categories ? categories.join(", ") : null,
         imageLinks?.smallThumbnail || null,
         imageLinks?.thumbnail || null,
-        "TO_READ",
+        status,
       ],
     );
     return result;
   };
 
-  const handleAddBook = async () => {
+  const handleAddBook = async (status: BookStatus) => {
     try {
-      await addBookToDatabase();
-      alert(`Book added successfully!`);
+      await addBookToDatabase(status);
+      showToast("Book added successfully!", "success");
     } catch (error) {
       console.error("Error adding book to database:", error);
-      alert(
+      showToast(
         `Failed to add book: ${
           error instanceof Error ? error.message : "Unknown error"
         }`,
+        "error",
       );
     }
   };
@@ -67,7 +71,10 @@ export default function BookDetailPage() {
       />
       <SafeAreaProvider>
         <SafeAreaView style={styles.container}>
-          <SearchBookItemDetails book={book} onAddBook={handleAddBook} />
+          <SearchBookItemDetails
+            book={book}
+            onAddBook={(status) => handleAddBook(status)}
+          />
         </SafeAreaView>
       </SafeAreaProvider>
     </>

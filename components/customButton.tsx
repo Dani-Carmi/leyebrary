@@ -1,52 +1,22 @@
-import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { TouchableOpacity } from "react-native";
+import { ComponentProps } from "react";
+import { Ionicons } from "@expo/vector-icons";
 
 type CustomButtonProps = {
   onPress: () => void;
-  title: string;
+  icon: ComponentProps<typeof Ionicons>["name"];
   variant?: "primary" | "secondary";
   disabled?: boolean;
 };
 
 export default function CustomButton({
   onPress,
-  title,
+  icon,
   disabled = false,
 }: CustomButtonProps) {
   return (
-    <View style={styles.divOuter}>
-      <TouchableOpacity
-        onPress={onPress}
-        disabled={disabled}
-        style={styles.divInner}
-        activeOpacity={0.7}
-      >
-        <Text style={styles.btnTxt}>{title}</Text>
-      </TouchableOpacity>
-    </View>
+    <TouchableOpacity onPress={onPress} disabled={disabled} activeOpacity={0.7}>
+      <Ionicons name={icon} size={25} color="#fffff9df" />
+    </TouchableOpacity>
   );
 }
-
-const styles = StyleSheet.create({
-  btnTxt: {
-    fontFamily: "Inter_600SemiBold",
-    textAlign: "center",
-    fontSize: 16,
-    color: "#000000",
-  },
-  divOuter: {
-    borderColor: "#ffffff",
-    borderWidth: 1,
-    width: 140,
-    height: 50,
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  divInner: {
-    backgroundColor: "#ffffff",
-    borderWidth: 1,
-    width: 130,
-    height: 40,
-    alignItems: "center",
-    justifyContent: "center",
-  },
-});

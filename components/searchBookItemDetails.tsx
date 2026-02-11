@@ -1,6 +1,6 @@
 import Background from "@/components/background";
 import CustomButton from "@/components/customButton";
-import { Book } from "@/utils/types";
+import { Book, BookStatus } from "@/utils/types";
 import { useState } from "react";
 import {
   Image,
@@ -13,7 +13,7 @@ import {
 
 interface SearchBookItemDetailsProps {
   book: Book;
-  onAddBook?: () => void;
+  onAddBook?: (status: BookStatus) => void;
 }
 
 export default function SearchBookItemDetails({
@@ -123,7 +123,18 @@ export default function SearchBookItemDetails({
       </ScrollView>
       {onAddBook && (
         <View style={styles.buttonContainer}>
-          <CustomButton title="Add to Library" onPress={onAddBook} />
+          <CustomButton
+            icon="time-outline"
+            onPress={() => onAddBook(BookStatus.TO_READ)}
+          />
+          <CustomButton
+            icon="book-outline"
+            onPress={() => onAddBook(BookStatus.READING)}
+          />
+          <CustomButton
+            icon="bookmark-outline"
+            onPress={() => onAddBook(BookStatus.READ)}
+          />
         </View>
       )}
     </Background>
@@ -263,10 +274,10 @@ const styles = StyleSheet.create({
     fontSize: 14,
   },
   buttonContainer: {
-    position: "absolute",
-    bottom: 20,
-    left: 20,
-    right: 20,
+    flexDirection: "row",
+    gap: 12,
     alignItems: "center",
+    justifyContent: "space-around",
+    marginBottom: 20,
   },
 });

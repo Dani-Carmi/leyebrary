@@ -5,6 +5,7 @@ import { useFonts } from "@expo-google-fonts/inter";
 import * as SplashScreen from "expo-splash-screen";
 import { InterFonts } from "@/utils/font";
 import { useEffect } from "react";
+import { ToastProvider } from "@/components/toast";
 
 // Keep the splash screen visible while fonts load
 SplashScreen.preventAutoHideAsync();
@@ -29,9 +30,11 @@ function RootLayoutContent() {
   }
 
   return (
-    <Stack>
-      <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-    </Stack>
+    <ToastProvider>
+      <Stack>
+        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+      </Stack>
+    </ToastProvider>
   );
 }
 

@@ -51,7 +51,6 @@ export const searchBooks = async (
         },
         params: {
           q: query,
-          maxResults: 40,
         },
       },
     );
