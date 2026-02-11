@@ -1,42 +1,48 @@
 import { BookStatus } from "@/utils/types";
-import { Text } from "react-native";
+import { View, StyleSheet } from "react-native";
+import { Ionicons } from "@expo/vector-icons";
+import { ComponentProps } from "react";
+
 export default function StatusBadge({ status }: { status: BookStatus }) {
   switch (status) {
     case BookStatus.TO_READ:
-      return <Badge text="To Read" textColor="#fff" bgColor="#aa731a" />;
+      return <Badge icon="time" textColor="#fff" bgColor="#007AFF" />;
     case BookStatus.READING:
-      return <Badge text="Reading" textColor="#fff" bgColor="#2980b9" />;
+      return <Badge icon="book" textColor="#fff" bgColor="#FF9500" />;
     case BookStatus.READ:
-      return <Badge text="Read" textColor="#fff" bgColor="#198445" />;
+      return <Badge icon="bookmark" textColor="#fff" bgColor="#34C759" />;
     default:
       return null;
   }
 }
 
 function Badge({
-  text,
+  icon,
   textColor,
   bgColor,
 }: {
-  text: string;
+  icon: ComponentProps<typeof Ionicons>["name"];
   textColor: string;
   bgColor: string;
 }) {
   return (
-    <Text
-      style={{
-        fontFamily: "Inter_600SemiBold",
-        backgroundColor: bgColor,
-        color: textColor,
-        paddingVertical: 4,
-        paddingHorizontal: 8,
-        borderRadius: 4,
-        fontSize: 12,
-        fontWeight: "bold",
-        alignSelf: "flex-start",
-      }}
+    <View
+      style={[
+        style.badgeContainer,
+        { backgroundColor: bgColor, paddingVertical: 4, paddingHorizontal: 8 },
+      ]}
     >
-      {text}
-    </Text>
+      <Ionicons name={icon} size={16} color={textColor} />
+    </View>
   );
 }
+
+const style = StyleSheet.create({
+  badgeContainer: {
+    display: "flex",
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 10,
+    borderRadius: 4,
+  },
+});
