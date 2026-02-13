@@ -6,7 +6,7 @@ export default {
     slug: "leyebrary",
     version: "1.0.0",
     orientation: "portrait",
-    icon: "./assets/images/Leyebrary_logo.png",
+    icon: "./assets/images/leyebrary-logo.png",
     scheme: "leyebrary",
     userInterfaceStyle: "automatic",
     newArchEnabled: true,
@@ -41,12 +41,12 @@ export default {
       [
         "expo-splash-screen",
         {
-          image: "./assets/images/splash-icon.png",
+          image: "./assets/images/leyebrary-splash-logo.png",
           imageWidth: 200,
           resizeMode: "contain",
-          backgroundColor: "#ffffff",
+          backgroundColor: "#11132A",
           dark: {
-            backgroundColor: "#000000",
+            backgroundColor: "#11132A",
           },
         },
       ],
