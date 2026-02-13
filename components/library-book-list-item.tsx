@@ -23,11 +23,15 @@ export default function LibraryBookListItem({ item }: { item: DBBook }) {
         </Text>
         {item.authors && (
           <Text style={styles.authors} numberOfLines={1}>
-            {item.authors}
+            {item?.authors}
           </Text>
         )}
         {item.publishedDate && (
-          <Text style={styles.year}>{item.publishedDate.substring(0, 4)}</Text>
+          <Text style={styles.year}>
+            {item?.publishedDate?.length > 4
+              ? item?.publishedDate?.substring(0, 4)
+              : item?.publishedDate}
+          </Text>
         )}
       </View>
       {item.status && (

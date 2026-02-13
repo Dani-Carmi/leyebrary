@@ -43,4 +43,5 @@ export interface DBBook {
   smallThumbnail?: string | null;
   thumbnail?: string | null;
   status: BookStatus;
+  createdAt: string;
 }

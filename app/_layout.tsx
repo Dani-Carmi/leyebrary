@@ -67,7 +67,8 @@ export default function RootLayout() {
               categories TEXT NULL,
               smallThumbnail TEXT NULL,
               thumbnail TEXT NULL,
-              status TEXT CHECK(status IN ('TO_READ', 'READING', 'READ')) DEFAULT 'TO_READ' NOT NULL
+              status TEXT CHECK(status IN ('TO_READ', 'READING', 'READ')) DEFAULT 'TO_READ' NOT NULL,
+              createdAt TEXT DEFAULT CURRENT_TIMESTAMP NOT NULL
             );
             PRAGMA journal_mode=WAL;
           `);

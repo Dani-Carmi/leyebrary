@@ -33,7 +33,7 @@ export default function LibraryBookList() {
 
   if (isLoading) {
     return (
-      <View>
+      <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
         <ActivityIndicator size="large" color="#1e90ff" />
       </View>
     );
@@ -41,8 +41,10 @@ export default function LibraryBookList() {
 
   if (books.length === 0) {
     return (
-      <View>
-        <Text>Your library is empty. Start adding some books!</Text>
+      <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+        <Text style={{ textAlign: "center", marginTop: 20, color: "#999" }}>
+          Your library is empty. Start adding some books!
+        </Text>
       </View>
     );
   }

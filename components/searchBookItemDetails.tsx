@@ -39,7 +39,7 @@ export default function SearchBookItemDetails({
           />
 
           <View style={styles.metadataContainer}>
-            {book.volumeInfo.categories && (
+            {book.volumeInfo.categories ? (
               <View>
                 <Text style={styles.categoriesLabel}>Categories</Text>
                 <View style={styles.categoriesWrapper}>
@@ -50,51 +50,51 @@ export default function SearchBookItemDetails({
                   ))}
                 </View>
               </View>
-            )}
+            ) : null}
 
-            {book.volumeInfo.publishedDate && (
+            {book.volumeInfo.publishedDate ? (
               <View>
                 <Text style={styles.metadataLabel}>Published</Text>
                 <Text style={styles.metadataValue}>
-                  {book.volumeInfo.publishedDate}
+                  {book.volumeInfo?.publishedDate}
                 </Text>
               </View>
-            )}
+            ) : null}
 
-            {book.volumeInfo.pageCount && (
+            {book.volumeInfo.pageCount ? (
               <View>
                 <Text style={styles.metadataLabel}>Pages</Text>
                 <Text style={styles.metadataValue}>
-                  {book.volumeInfo.pageCount}
+                  {book.volumeInfo?.pageCount}
                 </Text>
               </View>
-            )}
+            ) : null}
 
-            {book.volumeInfo.publisher && (
+            {book.volumeInfo.publisher ? (
               <View>
                 <Text style={styles.metadataLabel}>Publisher</Text>
                 <Text style={styles.metadataValue}>
-                  {book.volumeInfo.publisher}
+                  {book.volumeInfo?.publisher}
                 </Text>
               </View>
-            )}
+            ) : null}
           </View>
         </View>
 
         <View style={styles.infoContainer}>
           <Text style={styles.title}>{book.volumeInfo.title}</Text>
 
-          {book.volumeInfo.subtitle && (
+          {book.volumeInfo.subtitle ? (
             <Text style={styles.subtitle}>{book.volumeInfo.subtitle}</Text>
-          )}
+          ) : null}
 
-          {book.volumeInfo.authors && (
+          {book.volumeInfo.authors ? (
             <Text style={styles.authors}>
               by {book.volumeInfo.authors.join(", ")}
             </Text>
-          )}
+          ) : null}
 
-          {book.volumeInfo.description && (
+          {book.volumeInfo.description ? (
             <View style={styles.descriptionContainer}>
               <Text style={styles.descriptionLabel}>Description</Text>
               <Text style={styles.description}>
@@ -118,7 +118,7 @@ export default function SearchBookItemDetails({
                 </TouchableOpacity>
               )}
             </View>
-          )}
+          ) : null}
         </View>
       </ScrollView>
       {onAddBook && (
