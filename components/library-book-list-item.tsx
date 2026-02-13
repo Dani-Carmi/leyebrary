@@ -1,45 +1,69 @@
-import { DBBook } from "@/utils/types";
+import { BookStatus, DBBook } from "@/utils/types";
+import { useState } from "react";
 import { Image, Pressable, StyleSheet, Text, View } from "react-native";
+import BookActionSheet from "./book-action-sheet";
 import StatusBadge from "./statusBadge";
 
-export default function LibraryBookListItem({ item }: { item: DBBook }) {
-  return (
-    <Pressable style={styles.bookItem}>
-      {item.thumbnail ? (
-        <Image
-          source={{ uri: item.thumbnail }}
-          style={styles.thumbnail}
-          resizeMode="cover"
-        />
-      ) : (
-        <View style={[styles.thumbnail, styles.noImage]}>
-          <Text style={styles.noImageText}>No Image</Text>
-        </View>
-      )}
+interface LibraryBookListItemProps {
+  item: DBBook;
+  onDelete: (bookId: string) => void;
+  onStatusChange: (bookId: string, newStatus: BookStatus) => void;
+}
 
-      <View style={styles.bookInfo}>
-        <Text style={styles.title} numberOfLines={2}>
-          {item.title}
-        </Text>
-        {item.authors && (
-          <Text style={styles.authors} numberOfLines={1}>
-            {item?.authors}
-          </Text>
+export default function LibraryBookListItem({
+  item,
+  onDelete,
+  onStatusChange,
+}: LibraryBookListItemProps) {
+  const [sheetVisible, setSheetVisible] = useState(false);
+
+  return (
+    <>
+      <Pressable style={styles.bookItem} onPress={() => setSheetVisible(true)}>
+        {item.thumbnail ? (
+          <Image
+            source={{ uri: item.thumbnail }}
+            style={styles.thumbnail}
+            resizeMode="cover"
+          />
+        ) : (
+          <View style={[styles.thumbnail, styles.noImage]}>
+            <Text style={styles.noImageText}>No Image</Text>
+          </View>
         )}
-        {item.publishedDate && (
-          <Text style={styles.year}>
-            {item?.publishedDate?.length > 4
-              ? item?.publishedDate?.substring(0, 4)
-              : item?.publishedDate}
+
+        <View style={styles.bookInfo}>
+          <Text style={styles.title} numberOfLines={2}>
+            {item.title}
           </Text>
-        )}
-      </View>
-      {item.status && (
-        <View style={styles.statusContainer}>
-          <StatusBadge status={item.status} />
+          {item.authors && (
+            <Text style={styles.authors} numberOfLines={1}>
+              {item?.authors}
+            </Text>
+          )}
+          {item.publishedDate && (
+            <Text style={styles.year}>
+              {item?.publishedDate?.length > 4
+                ? item?.publishedDate?.substring(0, 4)
+                : item?.publishedDate}
+            </Text>
+          )}
         </View>
-      )}
-    </Pressable>
+        {item.status && (
+          <View style={styles.statusContainer}>
+            <StatusBadge status={item.status} />
+          </View>
+        )}
+      </Pressable>
+
+      <BookActionSheet
+        book={item}
+        visible={sheetVisible}
+        onClose={() => setSheetVisible(false)}
+        onDelete={onDelete}
+        onStatusChange={onStatusChange}
+      />
+    </>
   );
 }
 
