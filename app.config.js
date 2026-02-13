@@ -75,7 +75,7 @@ export default {
     extra: {
       router: {},
       eas: {
-        projectId: "d7e98ea9-0e4b-499a-8e17-35bfaa08c959",
+        projectId: "1d57ba8f-4cbb-43eb-885d-3c2425106745",
       },
       googleBooksApiKey: process.env.GOOGLE_BOOKS_API_KEY,
       googleBooksApiUrl: process.env.GOOGLE_BOOKS_API_URL,
