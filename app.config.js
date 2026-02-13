@@ -22,6 +22,7 @@ export default {
       },
       edgeToEdgeEnabled: true,
       predictiveBackGestureEnabled: false,
+      package: "com.leyebrary.leyebrary",
     },
     web: {
       output: "static",
