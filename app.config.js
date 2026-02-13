@@ -6,7 +6,7 @@ export default {
     slug: "leyebrary",
     version: "1.0.0",
     orientation: "portrait",
-    icon: "./assets/images/icon.png",
+    icon: "./assets/images/Leyebrary_logo.png",
     scheme: "leyebrary",
     userInterfaceStyle: "automatic",
     newArchEnabled: true,
