@@ -33,7 +33,7 @@ export default function CustomButton({
         borderColor: borderColor,
       }}
     >
-      <Ionicons name={icon} size={25} color={mainWhite} />
+      <Ionicons name={icon} size={20} color={mainWhite} />
     </TouchableOpacity>
   );
 }

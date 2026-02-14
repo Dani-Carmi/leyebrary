@@ -6,6 +6,30 @@ import { GoogleBooksApiResponse } from "../utils/types";
 const BASE_URL = Constants.expoConfig?.extra?.googleBooksApiUrl;
 const API_KEY = Constants.expoConfig?.extra?.googleBooksApiKey;
 
+/** Ensure image URLs use HTTPS (Google Books API returns http:// URLs which are blocked by iOS ATS in production) */
+const ensureHttps = (url?: string): string | undefined =>
+  url?.replace("http://", "https://");
+
+const sanitizeImageLinks = (
+  response: GoogleBooksApiResponse,
+): GoogleBooksApiResponse => ({
+  ...response,
+  items: response.items?.map((book) => ({
+    ...book,
+    volumeInfo: {
+      ...book.volumeInfo,
+      imageLinks: book.volumeInfo.imageLinks
+        ? {
+            smallThumbnail: ensureHttps(
+              book.volumeInfo.imageLinks.smallThumbnail,
+            ),
+            thumbnail: ensureHttps(book.volumeInfo.imageLinks.thumbnail),
+          }
+        : undefined,
+    },
+  })),
+});
+
 const fetchWithJsonp = (url: string): Promise<GoogleBooksApiResponse> => {
   return new Promise((resolve, reject) => {
     const callbackName = `jsonp_callback_${Date.now()}`;
@@ -40,7 +64,7 @@ export const searchBooks = async (
       const url = `${BASE_URL}/volumes?q=${encodeURIComponent(query)}${
         API_KEY ? `&key=${API_KEY}` : ""
       }`;
-      return await fetchWithJsonp(url);
+      return sanitizeImageLinks(await fetchWithJsonp(url));
     }
 
     const response = await axios.get<GoogleBooksApiResponse>(
@@ -54,7 +78,7 @@ export const searchBooks = async (
         },
       },
     );
-    return response.data;
+    return sanitizeImageLinks(response.data);
   } catch (error) {
     // eslint-disable-next-line
     if (axios.isAxiosError(error)) {

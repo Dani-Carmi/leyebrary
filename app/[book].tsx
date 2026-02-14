@@ -38,8 +38,8 @@ export default function BookDetailPage() {
         description || null,
         pageCount || null,
         categories ? categories.join(", ") : null,
-        imageLinks?.smallThumbnail || null,
-        imageLinks?.thumbnail || null,
+        imageLinks?.smallThumbnail?.replace("http://", "https://") || null,
+        imageLinks?.thumbnail?.replace("http://", "https://") || null,
         status,
       ],
     );
