@@ -1,6 +1,7 @@
 import { PlatformPressable } from "@react-navigation/elements";
 import { StyleSheet, Animated } from "react-native";
 import { useEffect, useRef } from "react";
+import { mainWhite } from "@/utils/styles";
 
 type TabBarBtnProps = {
   onPress: () => void;
@@ -28,12 +29,12 @@ export function TabBarBtn({
 
   const divFillColor = animatedValue.interpolate({
     inputRange: [0, 1],
-    outputRange: ["transparent", "#ffffff"],
+    outputRange: ["transparent", mainWhite],
   });
 
   const textColor = animatedValue.interpolate({
     inputRange: [0, 1],
-    outputRange: ["#ffffff", "#000000"],
+    outputRange: [mainWhite, "#000000"],
   });
 
   return (
@@ -58,19 +59,21 @@ const style = StyleSheet.create({
     fontSize: 16,
   },
   divOuter: {
-    borderColor: "#ffffff",
+    borderColor: mainWhite,
     borderWidth: 1,
     width: 140,
     height: 50,
     alignItems: "center",
     justifyContent: "center",
+    borderRadius: 100,
   },
   divInner: {
-    backgroundColor: "#ffffff",
+    backgroundColor: mainWhite,
     borderWidth: 1,
     width: 130,
     height: 40,
     alignItems: "center",
     justifyContent: "center",
+    borderRadius: 100,
   },
 });

@@ -1,9 +1,10 @@
 import React from "react";
 import { View, StyleSheet } from "react-native";
 import Svg, { Defs, Rect, RadialGradient, Stop } from "react-native-svg";
+import { mainBlack } from "@/utils/styles";
 
-const FROM_COLOR = "#15254E";
-const TO_COLOR = "#11132A";
+const FROM_COLOR = mainBlack;
+const TO_COLOR = mainBlack;
 
 const Background = ({ children }: { children: React.ReactNode }) => {
   return (

@@ -2,6 +2,7 @@ import { BookStatus, DBBook } from "@/utils/types";
 import { useState } from "react";
 import { Image, Pressable, StyleSheet, Text, View } from "react-native";
 import BookActionSheet from "./book-action-sheet";
+import { mainWhite } from "@/utils/styles";
 import StatusBadge from "./statusBadge";
 
 interface LibraryBookListItemProps {
@@ -41,11 +42,9 @@ export default function LibraryBookListItem({
               {item?.authors}
             </Text>
           )}
-          {item.publishedDate && (
-            <Text style={styles.year}>
-              {item?.publishedDate?.length > 4
-                ? item?.publishedDate?.substring(0, 4)
-                : item?.publishedDate}
+          {item.createdAt && (
+            <Text style={styles.createdAt}>
+              {new Date(item?.createdAt).toLocaleDateString()}
             </Text>
           )}
         </View>
@@ -75,11 +74,12 @@ const styles = StyleSheet.create({
   },
   bookItem: {
     flexDirection: "row",
-    backgroundColor: "#11132ab4",
-    borderColor: "#fff",
+    backgroundColor: "#0e1010",
+    borderColor: "#3a3f47",
     borderWidth: 1,
     padding: 12,
     marginBottom: 12,
+    borderRadius: 8,
   },
   noImageText: {
     color: "#666",
@@ -98,7 +98,7 @@ const styles = StyleSheet.create({
   },
   title: {
     fontFamily: "Inter_700Bold",
-    color: "#fff",
+    color: mainWhite,
     fontSize: 18,
     fontWeight: "600",
     marginBottom: 4,
@@ -109,9 +109,9 @@ const styles = StyleSheet.create({
     fontSize: 16,
     marginBottom: 2,
   },
-  year: {
+  createdAt: {
     fontFamily: "Inter_400Regular_Italic",
-    color: "#888",
+    color: "#a7a7a7",
     fontSize: 12,
   },
   statusContainer: {

@@ -12,6 +12,7 @@ import Animated, {
   withSpring,
 } from "react-native-reanimated";
 import { Ionicons } from "@expo/vector-icons";
+import { mainWhite } from "@/utils/styles";
 
 type ToastType = "success" | "error" | "info";
 
@@ -111,21 +112,21 @@ const styles = StyleSheet.create({
     zIndex: 9999,
   },
   toast: {
-    backgroundColor: "#1a1d3a",
+    backgroundColor: "#0e1010",
     borderRadius: 12,
     padding: 16,
     flexDirection: "row",
     alignItems: "center",
     gap: 12,
     borderLeftWidth: 4,
-    shadowColor: "#000",
+    shadowColor: "#181818",
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.3,
     shadowRadius: 8,
     elevation: 8,
   },
   toastText: {
-    color: "#fffff9df",
+    color: mainWhite,
     fontSize: 15,
     fontWeight: "500",
     flex: 1,

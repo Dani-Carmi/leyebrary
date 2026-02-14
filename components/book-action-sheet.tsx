@@ -8,6 +8,7 @@ import Animated, {
   SlideInDown,
   SlideOutDown,
 } from "react-native-reanimated";
+import { mainWhite } from "@/utils/styles";
 
 const STATUS_OPTIONS: {
   status: BookStatus;
@@ -116,12 +117,14 @@ export default function BookActionSheet({
                   <Ionicons
                     name={option.icon}
                     size={18}
-                    color={isSelected ? "#fff" : option.color}
+                    color={isSelected ? mainWhite : option.color}
                   />
                   <Text
                     style={[
                       styles.statusButtonText,
-                      isSelected ? { color: "#fff" } : { color: option.color },
+                      isSelected
+                        ? { color: mainWhite }
+                        : { color: option.color },
                     ]}
                   >
                     {option.label}
@@ -154,7 +157,7 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(0, 0, 0, 0.5)",
   },
   sheet: {
-    backgroundColor: "#1a1d2e",
+    backgroundColor: "#0e1010",
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20,
     paddingHorizontal: 20,
@@ -165,7 +168,7 @@ const styles = StyleSheet.create({
   },
   bookTitle: {
     fontFamily: "Inter_700Bold",
-    color: "#fff",
+    color: mainWhite,
     fontSize: 18,
     marginBottom: 2,
   },

@@ -1,5 +1,6 @@
 import { Book } from "@/utils/types";
 import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { mainWhite } from "@/utils/styles";
 
 export default function SearchBookListItem({
   item,
@@ -51,10 +52,12 @@ const styles = StyleSheet.create({
   },
   bookItem: {
     flexDirection: "row",
-    backgroundColor: "#3a3f47",
+    backgroundColor: "#0e1010",
     borderRadius: 8,
     padding: 12,
     marginBottom: 12,
+    borderColor: "#3a3f47",
+    borderWidth: 1,
   },
   noImageText: {
     color: "#666",
@@ -72,7 +75,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   title: {
-    color: "#fff",
+    color: mainWhite,
     fontSize: 16,
     fontWeight: "600",
     marginBottom: 4,

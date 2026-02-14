@@ -32,3 +32,13 @@ export const InterFonts = () => {
 // Inter_700Bold_Italic,
 // Inter_900Black_Italic
 // Inter_800ExtraBold_Italic,
+
+export const mainBlack = "#050304";
+export const mainWhite = "#eae4e4";
+
+export const toReadStatusBgColor = "#007bff30";
+export const toReadStatusBorderColor = "#007bff";
+export const readingStatusBgColor = "#FF950030";
+export const readingStatusBorderColor = "#FF9500";
+export const readStatusBgColor = "#34C75930";
+export const readStatusBorderColor = "#34C759";

@@ -13,6 +13,7 @@ import {
   KeyboardAvoidingView,
 } from "react-native";
 import SearchBookListItem from "./search-book-list-item";
+import { mainBlack, mainWhite } from "@/utils/styles";
 
 type Props = {
   query: string;
@@ -43,7 +44,7 @@ export const SearchBookList: FC<Props> = ({
       <View style={styles.contentContainer}>
         {loading && (
           <View style={styles.centerContent}>
-            <ActivityIndicator size="large" color="#fff" />
+            <ActivityIndicator size="large" color={mainWhite} />
             <Text style={styles.loadingText}>Searching...</Text>
           </View>
         )}
@@ -112,8 +113,8 @@ export const SearchBookList: FC<Props> = ({
                 loading || !query.trim()
                   ? "#e8e8e8"
                   : pressed
-                    ? "#021d3a"
-                    : "#fff"
+                    ? mainBlack
+                    : mainWhite
               }
             />
           )}
@@ -143,29 +144,32 @@ const styles = StyleSheet.create({
   },
   searchInput: {
     flex: 1,
-    borderColor: "#fff",
+    borderColor: mainWhite,
     borderWidth: 1,
-    color: "#fff",
+    color: mainWhite,
     padding: 12,
     fontSize: 16,
+    borderRadius: 100,
   },
   searchButton: {
     marginLeft: 8,
     padding: 8,
-    borderColor: "#fff",
+    borderColor: mainWhite,
     borderWidth: 1,
     justifyContent: "center",
     alignItems: "center",
+    borderRadius: 100,
   },
   searchButtonPressed: {
-    backgroundColor: "#fff",
+    backgroundColor: mainWhite,
   },
   clearButton: {
     marginLeft: 8,
     padding: 8,
+    borderRadius: 100,
   },
   clearButtonText: {
-    color: "#fff",
+    color: mainWhite,
     fontSize: 20,
   },
   centerContent: {

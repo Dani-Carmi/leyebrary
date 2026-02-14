@@ -3,7 +3,7 @@ import { Stack } from "expo-router";
 import { SQLiteProvider, useSQLiteContext } from "expo-sqlite";
 import { useFonts } from "@expo-google-fonts/inter";
 import * as SplashScreen from "expo-splash-screen";
-import { InterFonts } from "@/utils/font";
+import { InterFonts } from "@/utils/styles";
 import { useEffect } from "react";
 import { ToastProvider } from "@/components/toast";
 import Background from "@/components/background";

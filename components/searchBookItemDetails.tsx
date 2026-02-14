@@ -10,6 +10,15 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
+import {
+  mainWhite,
+  toReadStatusBgColor,
+  toReadStatusBorderColor,
+  readingStatusBgColor,
+  readingStatusBorderColor,
+  readStatusBgColor,
+  readStatusBorderColor,
+} from "@/utils/styles";
 
 interface SearchBookItemDetailsProps {
   book: Book;
@@ -126,14 +135,20 @@ export default function SearchBookItemDetails({
           <CustomButton
             icon="time-outline"
             onPress={() => onAddBook(BookStatus.TO_READ)}
+            bgColor={toReadStatusBgColor}
+            borderColor={toReadStatusBorderColor}
           />
           <CustomButton
             icon="book-outline"
             onPress={() => onAddBook(BookStatus.READING)}
+            bgColor={readingStatusBgColor}
+            borderColor={readingStatusBorderColor}
           />
           <CustomButton
             icon="bookmark-outline"
             onPress={() => onAddBook(BookStatus.READ)}
+            bgColor={readStatusBgColor}
+            borderColor={readStatusBorderColor}
           />
         </View>
       )}
@@ -174,7 +189,7 @@ const styles = StyleSheet.create({
   },
   title: {
     fontFamily: "Inter_700Bold",
-    color: "#fff",
+    color: mainWhite,
     fontSize: 26,
     fontWeight: "bold",
     marginBottom: 8,
@@ -212,7 +227,7 @@ const styles = StyleSheet.create({
   metadataValue: {
     fontFamily: "Inter_600SemiBold",
     textAlign: "right",
-    color: "#fff",
+    color: mainWhite,
     fontSize: 15,
     fontWeight: "600",
   },
@@ -241,12 +256,12 @@ const styles = StyleSheet.create({
   },
   categoryText: {
     fontFamily: "Inter_600SemiBold",
-    color: "#fff",
+    color: mainWhite,
     fontSize: 13,
   },
   descriptionContainer: {
     marginBottom: 20,
-    backgroundColor: "#11132ab4",
+    backgroundColor: "#0e1010",
     padding: 16,
     borderRadius: 8,
     borderWidth: 1,

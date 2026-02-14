@@ -5,6 +5,7 @@ import { useSQLiteContext } from "expo-sqlite";
 import { StyleSheet } from "react-native";
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 import { useToast } from "@/components/toast";
+import { mainBlack } from "@/utils/styles";
 
 export default function BookDetailPage() {
   const { bookData } = useLocalSearchParams();
@@ -75,6 +76,6 @@ export default function BookDetailPage() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#11132a",
+    backgroundColor: mainBlack,
   },
 });

@@ -41,12 +41,12 @@ export default {
       [
         "expo-splash-screen",
         {
-          image: "./assets/images/leyebrary-splash-logo.png",
+          image: "./assets/images/leyebrary-logo.png",
           imageWidth: 200,
           resizeMode: "contain",
-          backgroundColor: "#11132A",
+          backgroundColor: "#050304",
           dark: {
-            backgroundColor: "#11132A",
+            backgroundColor: "#050304",
           },
         },
       ],
