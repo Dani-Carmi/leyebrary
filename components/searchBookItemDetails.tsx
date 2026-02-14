@@ -3,7 +3,6 @@ import CustomButton from "@/components/customButton";
 import { Book, BookStatus } from "@/utils/types";
 import { useState } from "react";
 import {
-  Image,
   ScrollView,
   StyleSheet,
   Text,
@@ -19,6 +18,7 @@ import {
   readStatusBgColor,
   readStatusBorderColor,
 } from "@/utils/styles";
+import { Image } from "expo-image";
 
 interface SearchBookItemDetailsProps {
   book: Book;
@@ -38,13 +38,16 @@ export default function SearchBookItemDetails({
         <View style={styles.headContainer}>
           <Image
             source={{
-              uri: book.volumeInfo.imageLinks?.thumbnail?.replace(
-                "http://",
-                "https://",
-              ),
-            }}
+              uri: book.volumeInfo.imageLinks?.thumbnail
+                ? book.volumeInfo.imageLinks.thumbnail.replace(
+                    "http://",
+                    "https://",
+                  )
+                : "./assets/image-error.png",
+            }} // Ensure https
             style={styles.coverImage}
-            resizeMode="cover"
+            contentFit="cover"
+            cachePolicy="disk"
           />
 
           <View style={styles.metadataContainer}>

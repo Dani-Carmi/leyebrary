@@ -1,6 +1,7 @@
 import { Book } from "@/utils/types";
-import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { mainWhite } from "@/utils/styles";
+import { Image } from "expo-image";
 
 export default function SearchBookListItem({
   item,
@@ -15,9 +16,14 @@ export default function SearchBookListItem({
     <TouchableOpacity style={styles.bookItem} onPress={onPress}>
       {volumeInfo.imageLinks?.thumbnail ? (
         <Image
-          source={{ uri: volumeInfo.imageLinks.thumbnail }}
+          source={{
+            uri: volumeInfo.imageLinks.thumbnail
+              ? volumeInfo.imageLinks.thumbnail.replace("http://", "https://")
+              : "./assets/image-error.png",
+          }} // Ensure https
           style={styles.thumbnail}
-          resizeMode="cover"
+          contentFit="cover"
+          cachePolicy="disk"
         />
       ) : (
         <View style={[styles.thumbnail, styles.noImage]}>

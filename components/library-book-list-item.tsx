@@ -1,9 +1,10 @@
 import { BookStatus, DBBook } from "@/utils/types";
 import { useState } from "react";
-import { Image, Pressable, StyleSheet, Text, View } from "react-native";
+import { Pressable, StyleSheet, Text, View } from "react-native";
 import BookActionSheet from "./book-action-sheet";
 import { mainWhite } from "@/utils/styles";
 import StatusBadge from "./statusBadge";
+import { Image } from "expo-image";
 
 interface LibraryBookListItemProps {
   item: DBBook;
@@ -23,9 +24,14 @@ export default function LibraryBookListItem({
       <Pressable style={styles.bookItem} onPress={() => setSheetVisible(true)}>
         {item.thumbnail ? (
           <Image
-            source={{ uri: item.thumbnail }}
+            source={{
+              uri: item.thumbnail
+                ? item.thumbnail.replace("http://", "https://")
+                : "./assets/image-error.png",
+            }} // Ensure https
             style={styles.thumbnail}
-            resizeMode="cover"
+            contentFit="cover"
+            cachePolicy="disk"
           />
         ) : (
           <View style={[styles.thumbnail, styles.noImage]}>
