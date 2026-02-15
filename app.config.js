@@ -14,7 +14,6 @@ export default {
       supportsTablet: true,
     },
     android: {
-      icon: "./assets/images/leyebrary-bg-logo.png",
       adaptiveIcon: {
         foregroundImage: "./assets/images/leyebrary-logo.png",
         monochromeImage: "./assets/images/leyebrary-logo.png",
