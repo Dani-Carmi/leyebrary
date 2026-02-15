@@ -14,6 +14,7 @@ export default {
       supportsTablet: true,
     },
     android: {
+      icon: "./assets/images/leyebrary-logo.png",
       adaptiveIcon: {
         backgroundColor: "#E6F4FE",
         foregroundImage: "./assets/images/android-icon-foreground.png",
