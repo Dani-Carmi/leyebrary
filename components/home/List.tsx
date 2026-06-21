@@ -19,6 +19,8 @@ import {
   readingStatusBorderColor,
   readStatusBorderColor,
 } from "@/utils/styles";
+import { exportBooks, importBooks } from "@/services/bookBackup";
+import { useToast } from "@/components/Toast";
 
 type SortField = "createdAt" | "title";
 type SortDirection = "asc" | "desc";
@@ -42,8 +44,11 @@ const STATUS_FILTERS: { label: string; value: StatusFilter; color: string }[] =
 
 export default function LibraryBookList() {
   const db = useSQLiteContext();
+  const { showToast } = useToast();
   const [isLoading, setIsLoading] = useState(true);
   const [books, setBooks] = useState<DBBook[]>([]);
+  const [isExporting, setIsExporting] = useState(false);
+  const [isImporting, setIsImporting] = useState(false);
 
   const [searchQuery, setSearchQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState<StatusFilter>("ALL");
@@ -127,20 +132,45 @@ export default function LibraryBookList() {
     //eslint-disable-next-line react-hooks/exhaustive-deps
   }, [books]);
 
+  const handleExport = async () => {
+    if (isExporting) return;
+    setIsExporting(true);
+    try {
+      const res = await db.getAllSync("SELECT * FROM books");
+      await exportBooks(res as DBBook[]);
+    } catch {
+      showToast("Export failed", "error");
+    } finally {
+      setIsExporting(false);
+    }
+  };
+
+  const handleImport = async () => {
+    if (isImporting) return;
+    setIsImporting(true);
+    try {
+      const result = await importBooks(db);
+      if (result === null) return;
+      loadBooks();
+      const msg =
+        result.skipped > 0
+          ? `${result.imported} imported, ${result.skipped} skipped`
+          : `${result.imported} book${result.imported !== 1 ? "s" : ""} imported`;
+      showToast(msg, result.imported > 0 ? "success" : "info");
+    } catch (error) {
+      showToast(
+        error instanceof Error ? error.message : "Import failed",
+        "error",
+      );
+    } finally {
+      setIsImporting(false);
+    }
+  };
+
   if (isLoading) {
     return (
       <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
         <ActivityIndicator size="large" color="#1e90ff" />
-      </View>
-    );
-  }
-
-  if (books.length === 0) {
-    return (
-      <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-        <Text style={{ textAlign: "center", marginTop: 20, color: "#999" }}>
-          Your library is empty. Start adding some books!
-        </Text>
       </View>
     );
   }
@@ -211,7 +241,7 @@ export default function LibraryBookList() {
           })}
         </ScrollView>
 
-        {/* Sort Buttons */}
+        {/* Sort Buttons + Export/Import */}
         <View style={styles.sortRow}>
           <Text style={styles.sortLabel}>Sort by</Text>
           <Pressable
@@ -262,11 +292,42 @@ export default function LibraryBookList() {
               />
             )}
           </Pressable>
+          <View style={{ flex: 1 }} />
+          <Pressable
+            onPress={handleImport}
+            disabled={isImporting}
+            style={styles.actionIcon}
+          >
+            <Ionicons
+              name="download-outline"
+              size={20}
+              color={isImporting ? "#555" : "#999"}
+            />
+          </Pressable>
+          <Pressable
+            onPress={handleExport}
+            disabled={isExporting || books.length === 0}
+            style={styles.actionIcon}
+          >
+            <Ionicons
+              name="share-outline"
+              size={20}
+              color={isExporting || books.length === 0 ? "#555" : "#999"}
+            />
+          </Pressable>
         </View>
       </View>
 
       {/* Results */}
-      {filteredBooks.length === 0 ? (
+      {books.length === 0 ? (
+        <View
+          style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
+        >
+          <Text style={{ textAlign: "center", marginTop: 20, color: "#999" }}>
+            Your library is empty. Start adding some books!
+          </Text>
+        </View>
+      ) : filteredBooks.length === 0 ? (
         <View
           style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
         >
@@ -369,5 +430,8 @@ const styles = StyleSheet.create({
   sortButtonTextActive: {
     color: mainWhite,
     fontFamily: "Inter_600SemiBold",
+  },
+  actionIcon: {
+    padding: 6,
   },
 });
