@@ -12,7 +12,7 @@ import {
   View,
   KeyboardAvoidingView,
 } from "react-native";
-import SearchBookListItem from "./search-book-list-item";
+import SearchBookListItem from "./ListItem";
 import { mainBlack, mainWhite } from "@/utils/styles";
 
 type Props = {

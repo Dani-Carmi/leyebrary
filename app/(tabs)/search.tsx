@@ -1,6 +1,6 @@
-import { SearchBookList } from "@/components/search-book-list";
+import { SearchBookList } from "@/components/search/List";
 import { useBookSearch } from "@/hooks/useBookSearch";
-import Background from "@/components/background";
+import Background from "@/components/Background";
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 import { StyleSheet } from "react-native";
 

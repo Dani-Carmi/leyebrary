@@ -1,6 +1,6 @@
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { Tabs } from "expo-router";
-import { TabBar } from "../../components/tab bar/tabBar";
+import { TabBar } from "@/components/tabBar/TabBar";
 
 export default function RootLayout() {
   return (

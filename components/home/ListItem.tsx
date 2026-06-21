@@ -1,9 +1,9 @@
 import { BookStatus, DBBook } from "@/utils/types";
 import { useState } from "react";
 import { Pressable, StyleSheet, Text, View } from "react-native";
-import BookActionSheet from "./book-action-sheet";
+import BookActionSheet from "./BookAction";
 import { mainWhite } from "@/utils/styles";
-import StatusBadge from "./statusBadge";
+import StatusBadge from "../StatusBadge";
 import { Image } from "expo-image";
 
 interface LibraryBookListItemProps {

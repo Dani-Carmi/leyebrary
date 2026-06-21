@@ -1,5 +1,5 @@
-import Background from "@/components/background";
-import CustomButton from "@/components/customButton";
+import Button from "@/components/Button";
+import Background from "@/components/Background";
 import { Book, BookStatus } from "@/utils/types";
 import { useState } from "react";
 import {
@@ -135,19 +135,19 @@ export default function SearchBookItemDetails({
       </ScrollView>
       {onAddBook && (
         <View style={styles.buttonContainer}>
-          <CustomButton
+          <Button
             icon="time-outline"
             onPress={() => onAddBook(BookStatus.TO_READ)}
             bgColor={toReadStatusBgColor}
             borderColor={toReadStatusBorderColor}
           />
-          <CustomButton
+          <Button
             icon="book-outline"
             onPress={() => onAddBook(BookStatus.READING)}
             bgColor={readingStatusBgColor}
             borderColor={readingStatusBorderColor}
           />
-          <CustomButton
+          <Button
             icon="bookmark-outline"
             onPress={() => onAddBook(BookStatus.READ)}
             bgColor={readStatusBgColor}

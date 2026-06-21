@@ -1,10 +1,10 @@
-import SearchBookItemDetails from "@/components/searchBookItemDetails";
+import SearchBookItemDetails from "@/components/search/ItemDetails";
 import { Book, BookStatus } from "@/utils/types";
 import { useLocalSearchParams } from "expo-router";
 import { useSQLiteContext } from "expo-sqlite";
 import { StyleSheet } from "react-native";
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
-import { useToast } from "@/components/toast";
+import { useToast } from "@/components/Toast";
 import { mainBlack } from "@/utils/styles";
 
 export default function BookDetailPage() {

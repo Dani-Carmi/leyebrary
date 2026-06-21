@@ -5,8 +5,8 @@ import { useFonts } from "@expo-google-fonts/inter";
 import * as SplashScreen from "expo-splash-screen";
 import { InterFonts } from "@/utils/styles";
 import { useEffect } from "react";
-import { ToastProvider } from "@/components/toast";
-import Background from "@/components/background";
+import { ToastProvider } from "@/components/Toast";
+import Background from "@/components/Background";
 
 // Keep the splash screen visible while fonts load
 SplashScreen.preventAutoHideAsync();

@@ -12,7 +12,7 @@ type CustomButtonProps = {
   borderColor: string;
 };
 
-export default function CustomButton({
+export default function Button({
   onPress,
   icon,
   disabled = false,

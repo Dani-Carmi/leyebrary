@@ -1,7 +1,7 @@
 import { StyleSheet } from "react-native";
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
-import Background from "@/components/background";
-import LibraryBookList from "@/components/library-book-list";
+import Background from "@/components/Background";
+import LibraryBookList from "@/components/home/List";
 
 export default function Index() {
   return (
