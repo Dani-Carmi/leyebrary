@@ -70,11 +70,9 @@ export const searchBooks = async (
     const response = await axios.get<GoogleBooksApiResponse>(
       `${BASE_URL}/volumes`,
       {
-        headers: {
-          "x-api-key": API_KEY,
-        },
         params: {
           q: query,
+          ...(API_KEY ? { key: API_KEY } : {}),
         },
       },
     );
