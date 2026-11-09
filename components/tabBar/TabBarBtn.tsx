@@ -1,5 +1,4 @@
-import { PlatformPressable} from "expo-router/react-navigation";
-import { StyleSheet, Animated } from "react-native";
+import { Animated, Pressable, StyleSheet, View } from "react-native";
 import { useEffect, useState } from "react";
 import { mainWhite } from "@/utils/styles";
 
@@ -37,17 +36,24 @@ export function TabBarBtn({
   });
 
   return (
-    <Animated.View style={style.divOuter}>
-      <PlatformPressable
+    <View style={style.divOuter}>
+      <Pressable
         onPress={onPress}
         onLongPress={onLongPress}
-        style={[style.divInner, { backgroundColor: divFillColor }]}
+        accessibilityRole="tab"
+        accessibilityState={{ selected: isFocused }}
+        accessibilityLabel={label}
+        style={({ pressed }) => pressed && style.pressed}
       >
-        <Animated.Text style={[style.btnTxt, { color: textColor }]}>
-          {label}
-        </Animated.Text>
-      </PlatformPressable>
-    </Animated.View>
+        <Animated.View
+          style={[style.divInner, { backgroundColor: divFillColor }]}
+        >
+          <Animated.Text style={[style.btnTxt, { color: textColor }]}>
+            {label}
+          </Animated.Text>
+        </Animated.View>
+      </Pressable>
+    </View>
   );
 }
 
@@ -66,8 +72,10 @@ const style = StyleSheet.create({
     justifyContent: "center",
     borderRadius: 100,
   },
+  pressed: {
+    opacity: 0.7,
+  },
   divInner: {
-    backgroundColor: mainWhite,
     borderWidth: 1,
     width: 130,
     height: 40,
