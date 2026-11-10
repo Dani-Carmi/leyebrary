@@ -1,5 +1,5 @@
 import type { SQLiteDatabase } from "expo-sqlite";
-import { BookStatus, DBBook, NewBook } from "@/utils/types";
+import { Book, BookStatus, DBBook, NewBook } from "@/utils/types";
 
 export const DATABASE_NAME = "booksdatabase.db";
 
@@ -74,13 +74,53 @@ const insertParams = (book: NewBook) => [
 export const getAllBooks = (db: SQLiteDatabase): Promise<DBBook[]> =>
   db.getAllAsync<DBBook>("SELECT * FROM books");
 
-export const findByGoogleId = (
+/**
+ * What identifies a book in the library: the same Google volume, or the same
+ * title and authors (catches other editions of a book already saved).
+ */
+export type LibraryMatch = {
+  googleId: string | null;
+  title: string;
+  authors: string | null; // Comma-separated, as stored
+};
+
+export const libraryMatchFor = (book: Book): LibraryMatch => ({
+  googleId: book.id,
+  title: book.volumeInfo.title,
+  authors: book.volumeInfo.authors?.join(", ") ?? null,
+});
+
+const DUPLICATE_WHERE = `(googleId IS NOT NULL AND googleId = ?)
+   OR (title = ? AND authors IS ?)`;
+
+const duplicateParams = (match: LibraryMatch) => [
+  match.googleId ?? null,
+  match.title,
+  match.authors ?? null,
+];
+
+export const findInLibrary = (
   db: SQLiteDatabase,
-  googleId: string,
+  match: LibraryMatch,
 ): Promise<DBBook | null> =>
-  db.getFirstAsync<DBBook>("SELECT * FROM books WHERE googleId = ?", [
-    googleId,
-  ]);
+  db.getFirstAsync<DBBook>(
+    `SELECT * FROM books WHERE ${DUPLICATE_WHERE}
+      ORDER BY CASE WHEN googleId = ? THEN 0 ELSE 1 END
+      LIMIT 1`,
+    [...duplicateParams(match), match.googleId ?? null],
+  );
+
+export type LibraryKeyRow = LibraryMatch & { status: BookStatus };
+
+export const getLibraryKeys = (db: SQLiteDatabase): Promise<LibraryKeyRow[]> =>
+  db.getAllAsync<LibraryKeyRow>(
+    "SELECT googleId, title, authors, status FROM books",
+  );
+
+export const isDuplicateBookError = (error: unknown): boolean =>
+  String(error instanceof Error ? error.message : error).includes(
+    "UNIQUE constraint failed",
+  );
 
 export const addBook = async (
   db: SQLiteDatabase,
@@ -102,11 +142,6 @@ export const updateBookStatus = async (
   await db.runAsync("UPDATE books SET status = ? WHERE id = ?", [status, id]);
 };
 
-/**
- * Inserts already-validated books in a single transaction, skipping ones
- * already in the library (same Google ID, or same title and authors).
- * Either every insert lands or none do.
- */
 export const insertBooksSkippingDuplicates = async (
   db: SQLiteDatabase,
   books: NewBook[],
@@ -117,10 +152,12 @@ export const insertBooksSkippingDuplicates = async (
   await db.withTransactionAsync(async () => {
     for (const book of books) {
       const existing = await db.getFirstAsync<{ id: number }>(
-        `SELECT id FROM books
-          WHERE (googleId IS NOT NULL AND googleId = ?)
-             OR (title = ? AND authors IS ?)`,
-        [book.googleId ?? null, book.title, book.authors ?? null],
+        `SELECT id FROM books WHERE ${DUPLICATE_WHERE}`,
+        duplicateParams({
+          googleId: book.googleId ?? null,
+          title: book.title,
+          authors: book.authors ?? null,
+        }),
       );
       if (existing) {
         duplicates++;

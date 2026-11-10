@@ -1,4 +1,4 @@
-import { Book } from "@/utils/types";
+import { Book, BookStatus } from "@/utils/types";
 import { Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
 import { FC } from "react";
@@ -25,6 +25,8 @@ type Props = {
   search: () => void;
   loadMore: () => void;
   clearSearch: () => void;
+  /** Status of a result that is already in the library, if any. */
+  libraryStatusOf: (book: Book) => BookStatus | undefined;
 };
 
 export const SearchBookList: FC<Props> = ({
@@ -37,6 +39,7 @@ export const SearchBookList: FC<Props> = ({
   search,
   loadMore,
   clearSearch,
+  libraryStatusOf,
 }) => {
   const router = useRouter();
   return (
@@ -75,6 +78,7 @@ export const SearchBookList: FC<Props> = ({
             renderItem={({ item }) => (
               <SearchBookListItem
                 item={item}
+                libraryStatus={libraryStatusOf(item)}
                 onPress={() =>
                   router.push({
                     pathname: "/[book]",
@@ -84,6 +88,7 @@ export const SearchBookList: FC<Props> = ({
               />
             )}
             keyExtractor={(item) => item.id}
+            extraData={libraryStatusOf}
             onEndReached={loadMore}
             onEndReachedThreshold={0.5}
             ListFooterComponent={

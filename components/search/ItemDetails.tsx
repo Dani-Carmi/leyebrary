@@ -1,5 +1,7 @@
 import Button from "@/components/Button";
 import Background from "@/components/Background";
+import StatusBadge from "@/components/StatusBadge";
+import { Ionicons } from "@expo/vector-icons";
 import { Book, BookStatus } from "@/utils/types";
 import { useState } from "react";
 import {
@@ -24,11 +26,13 @@ const PLACEHOLDER_COVER = require("@/assets/images/image-error.png");
 
 interface SearchBookItemDetailsProps {
   book: Book;
+  libraryStatus?: BookStatus | null;
   onAddBook?: (status: BookStatus) => void;
 }
 
 export default function SearchBookItemDetails({
   book,
+  libraryStatus,
   onAddBook,
 }: SearchBookItemDetailsProps) {
   const [isDescriptionExpanded, setIsDescriptionExpanded] = useState(false);
@@ -132,7 +136,13 @@ export default function SearchBookItemDetails({
           ) : null}
         </View>
       </ScrollView>
-      {onAddBook && (
+      {libraryStatus ? (
+        <View style={styles.libraryBanner}>
+          <Ionicons name="library-outline" size={20} color={mainWhite} />
+          <Text style={styles.libraryBannerText}>In your library</Text>
+          <StatusBadge status={libraryStatus} showLabel />
+        </View>
+      ) : onAddBook ? (
         <View style={styles.buttonContainer}>
           <Button
             icon="time-outline"
@@ -153,7 +163,7 @@ export default function SearchBookItemDetails({
             borderColor={readStatusBorderColor}
           />
         </View>
-      )}
+      ) : null}
     </Background>
   );
 }
@@ -289,6 +299,25 @@ const styles = StyleSheet.create({
     marginTop: 8,
     fontStyle: "italic",
     fontSize: 14,
+  },
+  libraryBanner: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 10,
+    marginHorizontal: 20,
+    marginBottom: 20,
+    paddingVertical: 12,
+    paddingHorizontal: 16,
+    backgroundColor: "#0e1010",
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: "#3a3f47",
+  },
+  libraryBannerText: {
+    fontFamily: "Inter_600SemiBold",
+    color: mainWhite,
+    fontSize: 15,
+    flex: 1,
   },
   buttonContainer: {
     flexDirection: "row",
