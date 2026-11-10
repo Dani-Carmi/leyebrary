@@ -9,6 +9,7 @@ import { useToast } from "@/components/Toast";
 import { mainBlack, mainWhite } from "@/utils/styles";
 import { getBookById } from "@/services/googleBooksApi";
 import { addBook, findByGoogleId } from "@/services/booksRepository";
+import * as Haptics from "expo-haptics";
 
 type LoadState =
   | { kind: "loading" }
@@ -55,6 +56,7 @@ export default function BookDetailPage() {
     try {
       const existing = await findByGoogleId(db, book.id);
       if (existing) {
+        Haptics.notificationAsync(Haptics.NotificationFeedbackType.Warning);
         showToast("This book is already in your library", "info");
         return;
       }
@@ -74,9 +76,11 @@ export default function BookDetailPage() {
         status,
         createdAt: new Date().toISOString(),
       });
+      Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
       showToast("Book added to your library", "success");
     } catch (error) {
       console.error("Error adding book to database:", error);
+      Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error);
       showToast("Couldn't add the book. Please try again.", "error");
     } finally {
       setIsAdding(false);

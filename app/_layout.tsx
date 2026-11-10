@@ -5,6 +5,7 @@ import { useFonts } from "@expo-google-fonts/inter";
 import * as SplashScreen from "expo-splash-screen";
 import { InterFonts } from "@/utils/styles";
 import { useEffect } from "react";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { ToastProvider } from "@/components/Toast";
 import Background from "@/components/Background";
 import { DATABASE_NAME, migrateDatabase } from "@/services/booksRepository";
@@ -57,12 +58,14 @@ function RootLayoutContent() {
 
 export default function RootLayout() {
   return (
-    <SQLiteProvider
-      databaseName={DATABASE_NAME}
-      onInit={migrateDatabase}
-      options={{ useNewConnection: false }}
-    >
-      <RootLayoutContent />
-    </SQLiteProvider>
+    <GestureHandlerRootView style={{ flex: 1 }}>
+      <SQLiteProvider
+        databaseName={DATABASE_NAME}
+        onInit={migrateDatabase}
+        options={{ useNewConnection: false }}
+      >
+        <RootLayoutContent />
+      </SQLiteProvider>
+    </GestureHandlerRootView>
   );
 }
