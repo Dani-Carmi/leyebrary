@@ -1,3 +1,6 @@
+const isPublicBuild = process.env.LEYEBRARY_PUBLIC_BUILD === "true";
+const privateOnly = (value) => (isPublicBuild ? undefined : value);
+
 export default {
   expo: {
     name: "leyebrary",
@@ -32,6 +35,7 @@ export default {
     },
     plugins: [
       "expo-router",
+      "expo-secure-store",
       [
         "expo-font",
         {
@@ -79,12 +83,12 @@ export default {
         projectId: "1d57ba8f-4cbb-43eb-885d-3c2425106745",
       },
       // One key per platform: See services/googleBooksApi.ts for how each platform picks its key.
-      googleBooksAndroidApiKey: process.env.GOOGLE_BOOKS_ANDROID_API_KEY,
-      googleBooksIosApiKey: process.env.GOOGLE_BOOKS_IOS_API_KEY,
-      googleBooksWebApiKey: process.env.GOOGLE_BOOKS_WEB_API_KEY,
+      googleBooksAndroidApiKey: privateOnly(process.env.GOOGLE_BOOKS_ANDROID_API_KEY),
+      googleBooksIosApiKey: privateOnly(process.env.GOOGLE_BOOKS_IOS_API_KEY),
+      googleBooksWebApiKey: privateOnly(process.env.GOOGLE_BOOKS_WEB_API_KEY),
       // SHA-1 of the Android signing certificate (not secret). Sent with
       // requests so an "Android apps"-restricted key accepts them.
-      googleBooksAndroidCertSha1: process.env.GOOGLE_BOOKS_ANDROID_CERT_SHA1,
+      googleBooksAndroidCertSha1: privateOnly(process.env.GOOGLE_BOOKS_ANDROID_CERT_SHA1),
       googleBooksApiUrl: process.env.GOOGLE_BOOKS_API_URL,
     },
   },

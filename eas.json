@@ -10,12 +10,30 @@
         "buildType": "apk"
       }
     },
+    "public": {
+      "extends": "preview",
+      "env": {
+        "LEYEBRARY_PUBLIC_BUILD": "true",
+        "GOOGLE_BOOKS_API_URL": "https://www.googleapis.com/books/v1"
+      }
+    },
     "production": {
       "distribution": "store",
       "android": {
         "buildType": "app-bundle"
       }
-    }
+    },
+    "personal": {
+      "distribution": "internal",
+      "environment": "production",
+      "android": {
+        "buildType": "apk"
+      }
+    },   
+    "personal-ios": {
+      "distribution": "internal",
+      "environment": "production"
+    }   
   },
   "submit": {
     "production": {}

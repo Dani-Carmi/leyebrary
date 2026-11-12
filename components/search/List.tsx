@@ -27,6 +27,7 @@ type Props = {
   loading: boolean;
   loadingMore: boolean;
   error: string | null;
+  errorNeedsApiKey: boolean;
   search: (text?: string) => void;
   loadMore: () => void;
   clearSearch: () => void;
@@ -41,6 +42,7 @@ export const SearchBookList: FC<Props> = ({
   loading,
   loadingMore,
   error,
+  errorNeedsApiKey,
   search,
   loadMore,
   clearSearch,
@@ -89,6 +91,16 @@ export const SearchBookList: FC<Props> = ({
         {error && (
           <View style={styles.centerContent}>
             <Text style={styles.errorText}>{error}</Text>
+            {errorNeedsApiKey && (
+              <Pressable
+                onPress={() => router.push("/settings")}
+                style={styles.settingsButton}
+                accessibilityRole="button"
+              >
+                <Ionicons name="key-outline" size={16} color={mainWhite} />
+                <Text style={styles.settingsButtonText}>Add an API key</Text>
+              </Pressable>
+            )}
           </View>
         )}
         {!loading && !error && books.length === 0 && (
@@ -247,6 +259,22 @@ const styles = StyleSheet.create({
     color: "#ff6b6b",
     fontSize: 16,
     textAlign: "center",
+  },
+  settingsButton: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 8,
+    marginTop: 16,
+    borderColor: mainWhite,
+    borderWidth: 1,
+    borderRadius: 100,
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+  },
+  settingsButtonText: {
+    color: mainWhite,
+    fontSize: 15,
+    fontFamily: "Inter_600SemiBold",
   },
   emptyText: {
     color: "#999",

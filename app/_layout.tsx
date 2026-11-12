@@ -46,6 +46,7 @@ function RootLayoutContent() {
             name="library/[id]"
             options={{ headerShown: false }}
           />
+          <Stack.Screen name="settings" options={{ headerShown: false }} />
           <Stack.Screen
             name="[book]"
             options={{

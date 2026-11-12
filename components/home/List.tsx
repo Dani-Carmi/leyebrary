@@ -1,5 +1,5 @@
 import { useCallback, useMemo, useState } from "react";
-import { useFocusEffect } from "expo-router";
+import { useFocusEffect, useRouter } from "expo-router";
 import { useSQLiteContext } from "expo-sqlite";
 import { BookStatus, DBBook } from "@/utils/types";
 import {
@@ -52,6 +52,7 @@ const STATUS_FILTERS: { label: string; value: StatusFilter; color: string }[] =
 
 export default function LibraryBookList() {
   const db = useSQLiteContext();
+  const router = useRouter();
   const { showToast } = useToast();
   const [isLoading, setIsLoading] = useState(true);
   const [books, setBooks] = useState<DBBook[]>([]);
@@ -335,6 +336,14 @@ export default function LibraryBookList() {
               size={20}
               color={isExporting || books.length === 0 ? "#555" : "#999"}
             />
+          </Pressable>
+          <Pressable
+            onPress={() => router.push("/settings")}
+            style={styles.actionIcon}
+            accessibilityRole="button"
+            accessibilityLabel="Settings"
+          >
+            <Ionicons name="settings-outline" size={20} color="#999" />
           </Pressable>
         </View>
       </View>

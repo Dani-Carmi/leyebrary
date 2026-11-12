@@ -1,4 +1,4 @@
-import { searchBooks } from "@/services/googleBooksApi";
+import { BooksApiError, searchBooks } from "@/services/googleBooksApi";
 import {
   getCachedSearch,
   recordSearch,
@@ -30,6 +30,8 @@ export const useBookSearch = () => {
   const [loading, setLoading] = useState(false);
   const [loadingMore, setLoadingMore] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  // The last error would go away with an API key (none set, or a bad one).
+  const [errorNeedsApiKey, setErrorNeedsApiKey] = useState(false);
   // The query the shown results belong to; null until a search finishes.
   // Lets the screen tell "nothing found" apart from "not searched yet".
   const [searchedQuery, setSearchedQuery] = useState<string | null>(null);
@@ -85,6 +87,7 @@ export const useBookSearch = () => {
     } catch (err) {
       if (controller.signal.aborted) return;
       setError(errorMessage(err));
+      setErrorNeedsApiKey(err instanceof BooksApiError && err.needsApiKey);
       setBooks([]);
       setTotalItems(0);
       setSearchedQuery(null);
@@ -144,6 +147,7 @@ export const useBookSearch = () => {
     loadingMore,
     hasMore,
     error,
+    errorNeedsApiKey,
     search,
     loadMore,
     clearSearch,
