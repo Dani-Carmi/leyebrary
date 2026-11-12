@@ -8,6 +8,7 @@ import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 import { useToast } from "@/components/Toast";
 import { mainBlack, mainWhite } from "@/utils/styles";
 import { getBookById } from "@/services/googleBooksApi";
+import { getSeenVolume, rememberVolumes } from "@/services/searchCache";
 import {
   addBook,
   findInLibrary,
@@ -36,7 +37,16 @@ export default function BookDetailPage() {
 
   useEffect(() => {
     const controller = new AbortController();
-    getBookById(bookId, controller.signal)
+    // Books seen in earlier results open from the device, without the API.
+    const loadBook = async () => {
+      const saved = await getSeenVolume(db, bookId).catch(() => null);
+      if (saved) return saved;
+      const fetched = await getBookById(bookId, controller.signal);
+      if (fetched) rememberVolumes(db, [fetched]).catch(() => {});
+      return fetched;
+    };
+
+    loadBook()
       .then(async (book) => {
         if (controller.signal.aborted) return;
         if (!book) {

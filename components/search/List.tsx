@@ -1,10 +1,12 @@
 import { Book, BookStatus } from "@/utils/types";
 import { Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
-import { FC } from "react";
+import { FC, useState } from "react";
 import {
   ActivityIndicator,
+  Alert,
   FlatList,
+  Keyboard,
   Pressable,
   StyleSheet,
   Text,
@@ -13,24 +15,27 @@ import {
   KeyboardAvoidingView,
 } from "react-native";
 import SearchBookListItem from "./ListItem";
+import SearchSuggestions from "./Suggestions";
+import { useSearchSuggestions } from "@/hooks/useSearchSuggestions";
 import { mainBlack, mainWhite } from "@/utils/styles";
 
 type Props = {
   query: string;
+  searchedQuery: string | null;
   setQuery: (query: string) => void;
   books: Book[];
   loading: boolean;
   loadingMore: boolean;
   error: string | null;
-  search: () => void;
+  search: (text?: string) => void;
   loadMore: () => void;
   clearSearch: () => void;
-  /** Status of a result that is already in the library, if any. */
   libraryStatusOf: (book: Book) => BookStatus | undefined;
 };
 
 export const SearchBookList: FC<Props> = ({
   query,
+  searchedQuery,
   setQuery,
   books,
   loading,
@@ -42,6 +47,32 @@ export const SearchBookList: FC<Props> = ({
   libraryStatusOf,
 }) => {
   const router = useRouter();
+  const [inputFocused, setInputFocused] = useState(false);
+  const suggestions = useSearchSuggestions(query, inputFocused);
+  const showSuggestions =
+    suggestions.queries.length > 0 || suggestions.books.length > 0;
+
+  const openBook = (book: Book) =>
+    router.push({ pathname: "/[book]", params: { book: book.id } });
+
+  const confirmClearHistory = () =>
+    Alert.alert(
+      "Clear search history?",
+      "This removes your recent searches and saved results from this device. Your library isn't affected.",
+      [
+        { text: "Cancel", style: "cancel" },
+        {
+          text: "Clear",
+          style: "destructive",
+          onPress: () =>
+            suggestions.clearHistory().catch((error) => {
+              console.error("Couldn't clear search history:", error);
+              Alert.alert("Couldn't clear search history");
+            }),
+        },
+      ],
+    );
+
   return (
     <KeyboardAvoidingView
       style={styles.container}
@@ -60,15 +91,14 @@ export const SearchBookList: FC<Props> = ({
             <Text style={styles.errorText}>{error}</Text>
           </View>
         )}
-        {!loading && !error && books.length === 0 && query.length > 0 && (
-          <View style={styles.centerContent}>
-            <Text style={styles.emptyText}>No books found</Text>
-          </View>
-        )}
-        {!loading && !error && books.length === 0 && query.length === 0 && (
+        {!loading && !error && books.length === 0 && (
           <View style={styles.centerContent}>
             <Text style={styles.emptyText}>
-              Start typing to search for books
+              {searchedQuery
+                ? `No books found for “${searchedQuery}”`
+                : query.trim()
+                  ? "Tap search to find books"
+                  : "Start typing to search for books"}
             </Text>
           </View>
         )}
@@ -79,12 +109,7 @@ export const SearchBookList: FC<Props> = ({
               <SearchBookListItem
                 item={item}
                 libraryStatus={libraryStatusOf(item)}
-                onPress={() =>
-                  router.push({
-                    pathname: "/[book]",
-                    params: { book: item.id },
-                  })
-                }
+                onPress={() => openBook(item)}
               />
             )}
             keyExtractor={(item) => item.id}
@@ -100,6 +125,23 @@ export const SearchBookList: FC<Props> = ({
             showsVerticalScrollIndicator={false}
           />
         )}
+        {showSuggestions && (
+          <SearchSuggestions
+            queries={suggestions.queries}
+            books={suggestions.books}
+            showingRecent={suggestions.showingRecent}
+            libraryStatusOf={libraryStatusOf}
+            onSelectQuery={(text) => {
+              Keyboard.dismiss();
+              search(text);
+            }}
+            onSelectBook={(book) => {
+              Keyboard.dismiss();
+              openBook(book);
+            }}
+            onClearHistory={confirmClearHistory}
+          />
+        )}
       </View>
       <View style={styles.searchContainer}>
         <TextInput
@@ -108,13 +150,15 @@ export const SearchBookList: FC<Props> = ({
           placeholderTextColor="#999"
           value={query}
           onChangeText={setQuery}
-          onSubmitEditing={search}
+          onSubmitEditing={() => search()}
+          onFocus={() => setInputFocused(true)}
+          onBlur={() => setInputFocused(false)}
           autoCapitalize="none"
           autoCorrect={false}
           returnKeyType="search"
         />
         <Pressable
-          onPress={search}
+          onPress={() => search()}
           style={({ pressed }) => [
             styles.searchButton,
             pressed && styles.searchButtonPressed,

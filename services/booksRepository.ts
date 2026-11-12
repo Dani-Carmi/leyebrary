@@ -32,6 +32,27 @@ const MIGRATIONS: string[] = [
    UPDATE books
       SET createdAt = COALESCE(strftime('%Y-%m-%dT%H:%M:%fZ', createdAt), createdAt)
     WHERE createdAt NOT LIKE '%T%';`,
+  // v3: local search cache for autocomplete. `normalized`/`searchText` are
+  // lowercased, accent-free copies used for matching (see normalizeText).
+  `CREATE TABLE IF NOT EXISTS search_history (
+     normalized TEXT PRIMARY KEY,
+     query TEXT NOT NULL,
+     useCount INTEGER NOT NULL DEFAULT 1,
+     lastUsedAt TEXT NOT NULL,
+     results TEXT NULL,
+     totalItems INTEGER NULL,
+     resultsFetchedAt TEXT NULL
+   );
+   CREATE INDEX IF NOT EXISTS idx_search_history_lastUsedAt
+     ON search_history(lastUsedAt);
+   CREATE TABLE IF NOT EXISTS seen_volumes (
+     googleId TEXT PRIMARY KEY,
+     searchText TEXT NOT NULL,
+     data TEXT NOT NULL,
+     lastSeenAt TEXT NOT NULL
+   );
+   CREATE INDEX IF NOT EXISTS idx_seen_volumes_lastSeenAt
+     ON seen_volumes(lastSeenAt);`,
 ];
 
 export const migrateDatabase = async (db: SQLiteDatabase): Promise<void> => {
