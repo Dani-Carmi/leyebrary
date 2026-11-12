@@ -43,6 +43,10 @@ function RootLayoutContent() {
         <Stack>
           <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
           <Stack.Screen
+            name="library/[id]"
+            options={{ headerShown: false }}
+          />
+          <Stack.Screen
             name="[book]"
             options={{
               headerShown: false,

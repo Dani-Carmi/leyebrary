@@ -1,7 +1,13 @@
 import { BookStatus, DBBook } from "@/utils/types";
 import { Ionicons } from "@expo/vector-icons";
 import { ComponentProps, useState } from "react";
-import { Modal, Pressable, StyleSheet, Text, View } from "react-native";
+import {
+  Modal,
+  Pressable,
+  StyleSheet,
+  Text,
+  View,
+} from "react-native";
 import Animated, {
   FadeIn,
   FadeOut,
@@ -63,7 +69,10 @@ export default function BookActionSheet({
   // (Alert.alert isn't available on web, so the confirmation is inline.)
   const [confirmingDelete, setConfirmingDelete] = useState(false);
 
+  const [windowShown, setWindowShown] = useState(false);
+
   const handleClose = () => {
+    setWindowShown(false);
     setConfirmingDelete(false);
     onClose();
   };
@@ -83,99 +92,106 @@ export default function BookActionSheet({
       transparent
       animationType="none"
       onRequestClose={handleClose}
+      onShow={() => setWindowShown(true)}
       statusBarTranslucent
     >
       <View style={styles.overlay}>
-        <AnimatedPressable
-          entering={FadeIn.duration(200)}
-          exiting={FadeOut.duration(200)}
-          style={styles.backdrop}
-          onPress={handleClose}
-        />
-
-        <Animated.View
-          entering={SlideInDown.springify().duration(300)}
-          exiting={SlideOutDown.duration(200)}
-          style={styles.sheet}
-        >
-          {/* Book title */}
-          <Text style={styles.bookTitle} numberOfLines={2}>
-            {book.title}
-          </Text>
-          {book.authors && (
-            <Text style={styles.bookAuthors} numberOfLines={1}>
-              {book.authors}
-            </Text>
-          )}
-
-          <View style={styles.divider} />
-
-          {/* Status buttons */}
-          <Text style={styles.sectionLabel}>Status</Text>
-          <View style={styles.statusRow}>
-            {STATUS_OPTIONS.map((option) => {
-              const isSelected = book.status === option.status;
-              return (
-                <Pressable
-                  key={option.status}
-                  style={[
-                    styles.statusButton,
-                    isSelected && {
-                      backgroundColor: option.color,
-                      borderColor: option.color,
-                    },
-                  ]}
-                  onPress={() => handleStatusPress(option.status)}
-                >
-                  <Ionicons
-                    name={option.icon}
-                    size={18}
-                    color={isSelected ? mainWhite : option.color}
-                  />
-                  <Text
-                    style={[
-                      styles.statusButtonText,
-                      isSelected
-                        ? { color: mainWhite }
-                        : { color: option.color },
-                    ]}
-                  >
-                    {option.label}
-                  </Text>
-                </Pressable>
-              );
-            })}
-          </View>
-
-          <View style={styles.divider} />
-
-          {/* Delete button */}
-          <Pressable
-            style={[
-              styles.deleteButton,
-              confirmingDelete && styles.deleteButtonConfirming,
-            ]}
-            onPress={handleDelete}
-            accessibilityRole="button"
-            accessibilityLabel={
-              confirmingDelete ? "Confirm delete" : "Delete from library"
-            }
-          >
-            <Ionicons
-              name={confirmingDelete ? "alert-circle" : "trash"}
-              size={20}
-              color={confirmingDelete ? mainWhite : "#FF3B30"}
+        {windowShown && (
+          <>
+            <AnimatedPressable
+              entering={FadeIn.duration(200)}
+              exiting={FadeOut.duration(200)}
+              style={styles.backdrop}
+              onPress={handleClose}
             />
-            <Text
-              style={[
-                styles.deleteText,
-                confirmingDelete && styles.deleteTextConfirming,
-              ]}
+
+            <Animated.View
+              entering={SlideInDown.springify().duration(300)}
+              exiting={SlideOutDown.duration(200)}
+              style={styles.sheet}
             >
-              {confirmingDelete ? "Tap again to delete" : "Delete from Library"}
-            </Text>
-          </Pressable>
-        </Animated.View>
+              {/* Book title */}
+              <Text style={styles.bookTitle} numberOfLines={2}>
+                {book.title}
+              </Text>
+              {book.authors && (
+                <Text style={styles.bookAuthors} numberOfLines={1}>
+                  {book.authors}
+                </Text>
+              )}
+
+              <View style={styles.divider} />
+
+              {/* Status buttons */}
+              <Text style={styles.sectionLabel}>Status</Text>
+              <View style={styles.statusRow}>
+                {STATUS_OPTIONS.map((option) => {
+                  const isSelected = book.status === option.status;
+                  return (
+                    <Pressable
+                      key={option.status}
+                      style={[
+                        styles.statusButton,
+                        isSelected && {
+                          backgroundColor: option.color,
+                          borderColor: option.color,
+                        },
+                      ]}
+                      onPress={() => handleStatusPress(option.status)}
+                    >
+                      <Ionicons
+                        name={option.icon}
+                        size={18}
+                        color={isSelected ? mainWhite : option.color}
+                      />
+                      <Text
+                        style={[
+                          styles.statusButtonText,
+                          isSelected
+                            ? { color: mainWhite }
+                            : { color: option.color },
+                        ]}
+                      >
+                        {option.label}
+                      </Text>
+                    </Pressable>
+                  );
+                })}
+              </View>
+
+              <View style={styles.divider} />
+
+              {/* Delete button */}
+              <Pressable
+                style={[
+                  styles.deleteButton,
+                  confirmingDelete && styles.deleteButtonConfirming,
+                ]}
+                onPress={handleDelete}
+                accessibilityRole="button"
+                accessibilityLabel={
+                  confirmingDelete ? "Confirm delete" : "Delete from library"
+                }
+              >
+                <Ionicons
+                  name={confirmingDelete ? "alert-circle" : "trash"}
+                  size={20}
+                  color={confirmingDelete ? mainWhite : "#FF3B30"}
+                />
+                <Text
+                  style={[
+                    styles.deleteText,
+                    confirmingDelete && styles.deleteTextConfirming,
+                  ]}
+                >
+                  {confirmingDelete
+                    ? "Tap again to delete"
+                    : "Delete from Library"}
+                </Text>
+              </Pressable>
+            </Animated.View>
+          </>
+        )}
       </View>
     </Modal>
   );

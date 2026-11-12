@@ -1,5 +1,13 @@
 import type { SQLiteDatabase } from "expo-sqlite";
-import { Book, BookStatus, DBBook, NewBook } from "@/utils/types";
+import {
+  Book,
+  BookStatus,
+  DBBook,
+  NewBook,
+  PortableBook,
+  ReadingDates,
+} from "@/utils/types";
+import { addTagToBook, pruneUnusedTags } from "./readingRepository";
 
 export const DATABASE_NAME = "booksdatabase.db";
 
@@ -53,10 +61,34 @@ const MIGRATIONS: string[] = [
    );
    CREATE INDEX IF NOT EXISTS idx_seen_volumes_lastSeenAt
      ON seen_volumes(lastSeenAt);`,
+  // v4: reading data for library books: notes, read-throughs and tags.
+  // Session dates are local calendar days (YYYY-MM-DD).
+  `ALTER TABLE books ADD COLUMN notes TEXT NULL;
+   CREATE TABLE IF NOT EXISTS reading_sessions (
+     id INTEGER PRIMARY KEY AUTOINCREMENT,
+     bookId INTEGER NOT NULL REFERENCES books(id) ON DELETE CASCADE,
+     startedAt TEXT NULL,
+     finishedAt TEXT NULL,
+     createdAt TEXT NOT NULL
+   );
+   CREATE INDEX IF NOT EXISTS idx_reading_sessions_bookId
+     ON reading_sessions(bookId);
+   CREATE TABLE IF NOT EXISTS tags (
+     id INTEGER PRIMARY KEY AUTOINCREMENT,
+     name TEXT NOT NULL,
+     normalized TEXT NOT NULL UNIQUE
+   );
+   CREATE TABLE IF NOT EXISTS book_tags (
+     bookId INTEGER NOT NULL REFERENCES books(id) ON DELETE CASCADE,
+     tagId INTEGER NOT NULL REFERENCES tags(id) ON DELETE CASCADE,
+     PRIMARY KEY (bookId, tagId)
+   );`,
 ];
 
 export const migrateDatabase = async (db: SQLiteDatabase): Promise<void> => {
   await db.execAsync("PRAGMA journal_mode = WAL;");
+  // Off by default in SQLite; needed for ON DELETE CASCADE to apply.
+  await db.execAsync("PRAGMA foreign_keys = ON;");
   const row = await db.getFirstAsync<{ user_version: number }>(
     "PRAGMA user_version",
   );
@@ -73,8 +105,8 @@ export const migrateDatabase = async (db: SQLiteDatabase): Promise<void> => {
   }
 };
 
-const INSERT_SQL = `INSERT INTO books (googleId, title, subtitle, authors, publisher, publishedDate, description, pageCount, categories, smallThumbnail, thumbnail, status, createdAt)
-  VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
+const INSERT_SQL = `INSERT INTO books (googleId, title, subtitle, authors, publisher, publishedDate, description, pageCount, categories, smallThumbnail, thumbnail, status, createdAt, notes)
+  VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
 
 const insertParams = (book: NewBook) => [
   book.googleId ?? null,
@@ -90,10 +122,50 @@ const insertParams = (book: NewBook) => [
   book.thumbnail ?? null,
   book.status,
   book.createdAt,
+  book.notes ?? null,
 ];
 
-export const getAllBooks = (db: SQLiteDatabase): Promise<DBBook[]> =>
-  db.getAllAsync<DBBook>("SELECT * FROM books");
+/** Every library book, with its tags. */
+export const getAllBooks = async (db: SQLiteDatabase): Promise<DBBook[]> => {
+  const [books, tagRows] = await Promise.all([
+    db.getAllAsync<DBBook>("SELECT * FROM books"),
+    db.getAllAsync<{ bookId: number; name: string }>(
+      `SELECT bt.bookId, t.name FROM book_tags bt JOIN tags t ON t.id = bt.tagId
+        ORDER BY t.name COLLATE NOCASE`,
+    ),
+  ]);
+  const tagsByBook = new Map<number, string[]>();
+  for (const { bookId, name } of tagRows) {
+    tagsByBook.set(bookId, [...(tagsByBook.get(bookId) ?? []), name]);
+  }
+  return books.map((b) => ({ ...b, tags: tagsByBook.get(b.id) ?? [] }));
+};
+
+/** Every book with its read-throughs and tags, ready for a backup file. */
+export const getBackupBooks = async (
+  db: SQLiteDatabase,
+): Promise<PortableBook[]> => {
+  const [books, sessions] = await Promise.all([
+    getAllBooks(db),
+    db.getAllAsync<ReadingDates & { bookId: number }>(
+      `SELECT bookId, startedAt, finishedAt FROM reading_sessions
+        ORDER BY COALESCE(startedAt, finishedAt) ASC, id ASC`,
+    ),
+  ]);
+  const readingsByBook = new Map<number, ReadingDates[]>();
+  for (const { bookId, startedAt, finishedAt } of sessions) {
+    readingsByBook.set(bookId, [
+      ...(readingsByBook.get(bookId) ?? []),
+      { startedAt, finishedAt },
+    ]);
+  }
+  // Database row IDs are local to this install; leave them out of backups.
+  return books.map(({ id, tags, ...book }) => ({
+    ...book,
+    readings: readingsByBook.get(id) ?? [],
+    tags: tags ?? [],
+  }));
+};
 
 /**
  * What identifies a book in the library: the same Google volume, or the same
@@ -152,7 +224,11 @@ export const addBook = async (
 };
 
 export const deleteBook = async (db: SQLiteDatabase, id: number) => {
+  // Explicit as well as ON DELETE CASCADE, in case foreign keys are off.
+  await db.runAsync("DELETE FROM reading_sessions WHERE bookId = ?", [id]);
+  await db.runAsync("DELETE FROM book_tags WHERE bookId = ?", [id]);
   await db.runAsync("DELETE FROM books WHERE id = ?", [id]);
+  await pruneUnusedTags(db);
 };
 
 export const updateBookStatus = async (
@@ -165,7 +241,7 @@ export const updateBookStatus = async (
 
 export const insertBooksSkippingDuplicates = async (
   db: SQLiteDatabase,
-  books: NewBook[],
+  books: PortableBook[],
 ): Promise<{ imported: number; duplicates: number }> => {
   let imported = 0;
   let duplicates = 0;
@@ -184,7 +260,18 @@ export const insertBooksSkippingDuplicates = async (
         duplicates++;
         continue;
       }
-      await db.runAsync(INSERT_SQL, insertParams(book));
+      const { lastInsertRowId: bookId } = await db.runAsync(
+        INSERT_SQL,
+        insertParams(book),
+      );
+      for (const reading of book.readings) {
+        await db.runAsync(
+          `INSERT INTO reading_sessions (bookId, startedAt, finishedAt, createdAt)
+           VALUES (?, ?, ?, ?)`,
+          [bookId, reading.startedAt, reading.finishedAt, book.createdAt],
+        );
+      }
+      for (const tag of book.tags) await addTagToBook(db, bookId, tag);
       imported++;
     }
   });

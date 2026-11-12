@@ -24,8 +24,10 @@ import { exportBooks, importBooks } from "@/services/bookBackup";
 import {
   deleteBook,
   getAllBooks,
+  getBackupBooks,
   updateBookStatus,
 } from "@/services/booksRepository";
+import { normalizeText } from "@/utils/text";
 import { useToast } from "@/components/Toast";
 
 type SortField = "createdAt" | "title";
@@ -113,13 +115,23 @@ export default function LibraryBookList() {
   const filteredBooks = useMemo(() => {
     let result = [...books];
 
-    if (searchQuery.trim()) {
-      const q = searchQuery.toLowerCase();
-      result = result.filter(
-        (b) =>
-          b.title.toLowerCase().includes(q) ||
-          (b.authors && b.authors.toLowerCase().includes(q)),
-      );
+    // Matches title, authors or tags, ignoring case and accents; a leading
+    // "#" searches tags only ("#sci-fi").
+    const raw = searchQuery.trim();
+    if (raw) {
+      const tagsOnly = raw.startsWith("#");
+      const q = normalizeText(raw.replace(/^#+/, ""));
+      if (q) {
+        result = result.filter((b) => {
+          const tagHit = (b.tags ?? []).some((t) => normalizeText(t).includes(q));
+          if (tagsOnly) return tagHit;
+          return (
+            tagHit ||
+            normalizeText(b.title).includes(q) ||
+            (!!b.authors && normalizeText(b.authors).includes(q))
+          );
+        });
+      }
     }
 
     if (statusFilter !== "ALL") {
@@ -146,7 +158,7 @@ export default function LibraryBookList() {
     if (isExporting) return;
     setIsExporting(true);
     try {
-      await exportBooks(await getAllBooks(db));
+      await exportBooks(await getBackupBooks(db));
     } catch {
       showToast("Export failed", "error");
     } finally {
@@ -197,7 +209,7 @@ export default function LibraryBookList() {
           />
           <TextInput
             style={styles.searchInput}
-            placeholder="Search your library..."
+            placeholder="Search title, author or #tag"
             placeholderTextColor="#999"
             value={searchQuery}
             onChangeText={setSearchQuery}

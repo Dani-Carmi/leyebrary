@@ -2,7 +2,7 @@ import { File, Paths } from "expo-file-system";
 import * as Sharing from "expo-sharing";
 import * as DocumentPicker from "expo-document-picker";
 import type { SQLiteDatabase } from "expo-sqlite";
-import { DBBook, NewBook } from "@/utils/types";
+import { PortableBook } from "@/utils/types";
 import { sanitizeImportedBook } from "@/utils/validation";
 import { insertBooksSkippingDuplicates } from "./booksRepository";
 
@@ -10,15 +10,14 @@ const EXPORT_FILENAME = "your-library.json";
 const MAX_IMPORT_BYTES = 5 * 1024 * 1024;
 const MAX_IMPORT_BOOKS = 10_000;
 
-export const exportBooks = async (books: DBBook[]): Promise<void> => {
+/** Shares a backup of the library, reading data included (see getBackupBooks). */
+export const exportBooks = async (books: PortableBook[]): Promise<void> => {
   const canShare = await Sharing.isAvailableAsync();
   if (!canShare) {
     throw new Error("Sharing is not available on this device");
   }
-  // Database row IDs are local to this install; leave them out of backups.
-  const portable = books.map(({ id: _id, ...book }) => book);
   const file = new File(Paths.cache, EXPORT_FILENAME);
-  file.write(JSON.stringify(portable, null, 2));
+  file.write(JSON.stringify(books, null, 2));
   await Sharing.shareAsync(file.uri, {
     mimeType: "application/json",
     dialogTitle: "Export your library",
@@ -56,7 +55,7 @@ export const importBooks = async (
     throw new Error(`Invalid file: more than ${MAX_IMPORT_BOOKS} books`);
   }
 
-  const valid: NewBook[] = [];
+  const valid: PortableBook[] = [];
   for (const item of parsed) {
     const book = sanitizeImportedBook(item);
     if (book) valid.push(book);

@@ -1,4 +1,5 @@
-import { Book, BookStatus, NewBook } from "./types";
+import { Book, BookStatus, PortableBook, ReadingDates } from "./types";
+import { isDateString } from "./dates";
 
 /** Google Books volume IDs are short URL-safe strings (e.g. "zyTCAlFPjgYC"). */
 const GOOGLE_ID_PATTERN = /^[A-Za-z0-9_-]{1,64}$/;
@@ -15,6 +16,10 @@ const VALID_STATUSES = new Set<string>(Object.values(BookStatus));
 const MAX_TITLE_LENGTH = 500;
 const MAX_FIELD_LENGTH = 2_000;
 const MAX_DESCRIPTION_LENGTH = 20_000;
+const MAX_NOTES_LENGTH = 20_000;
+const MAX_READINGS_PER_BOOK = 100;
+const MAX_TAGS_PER_BOOK = 50;
+export const MAX_TAG_LENGTH = 40;
 
 export const isValidGoogleId = (value: unknown): value is string =>
   typeof value === "string" && GOOGLE_ID_PATTERN.test(value);
@@ -64,7 +69,35 @@ export const toIsoTimestamp = (value: unknown): string => {
  * Validates one entry from an imported backup file. Returns null when the
  * entry is unusable; otherwise a copy holding only known, well-typed fields.
  */
-export const sanitizeImportedBook = (value: unknown): NewBook | null => {
+const optionalDate = (value: unknown): string | null =>
+  isDateString(value) ? value : null;
+
+/** Read-throughs from a backup; entries without any valid date are dropped. */
+const importedReadings = (value: unknown): ReadingDates[] => {
+  if (!Array.isArray(value)) return [];
+  const readings: ReadingDates[] = [];
+  for (const entry of value.slice(0, MAX_READINGS_PER_BOOK)) {
+    if (!entry || typeof entry !== "object") continue;
+    const r = entry as Record<string, unknown>;
+    const startedAt = optionalDate(r.startedAt);
+    let finishedAt = optionalDate(r.finishedAt);
+    // A finish before the start is contradictory; keep the start only.
+    if (startedAt && finishedAt && finishedAt < startedAt) finishedAt = null;
+    if (startedAt || finishedAt) readings.push({ startedAt, finishedAt });
+  }
+  return readings;
+};
+
+const importedTags = (value: unknown): string[] => {
+  if (!Array.isArray(value)) return [];
+  return value
+    .filter((t): t is string => typeof t === "string")
+    .map((t) => t.trim().slice(0, MAX_TAG_LENGTH))
+    .filter((t) => t.length > 0)
+    .slice(0, MAX_TAGS_PER_BOOK);
+};
+
+export const sanitizeImportedBook = (value: unknown): PortableBook | null => {
   if (!value || typeof value !== "object" || Array.isArray(value)) return null;
   const b = value as Record<string, unknown>;
 
@@ -88,6 +121,10 @@ export const sanitizeImportedBook = (value: unknown): NewBook | null => {
     thumbnail: sanitizeImageUrl(b.thumbnail),
     status: b.status as BookStatus,
     createdAt: toIsoTimestamp(b.createdAt),
+    notes: optionalString(b.notes, MAX_NOTES_LENGTH),
+    // Backups from before reading data existed have neither field.
+    readings: importedReadings(b.readings),
+    tags: importedTags(b.tags),
   };
 };
 

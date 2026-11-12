@@ -1,6 +1,9 @@
 import { BookStatus, DBBook } from "@/utils/types";
 import { useState } from "react";
 import { Pressable, StyleSheet, Text, View } from "react-native";
+import { useRouter } from "expo-router";
+import { Ionicons } from "@expo/vector-icons";
+import * as Haptics from "expo-haptics";
 import BookActionSheet from "./BookAction";
 import { mainWhite } from "@/utils/styles";
 import StatusBadge from "../StatusBadge";
@@ -17,11 +20,32 @@ export default function LibraryBookListItem({
   onDelete,
   onStatusChange,
 }: LibraryBookListItemProps) {
+  const router = useRouter();
   const [sheetVisible, setSheetVisible] = useState(false);
+
+  const openEditor = () =>
+    router.push({ pathname: "/library/[id]", params: { id: String(item.id) } });
+
+  const openActions = () => {
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+    setSheetVisible(true);
+  };
 
   return (
     <>
-      <Pressable style={styles.bookItem} onPress={() => setSheetVisible(true)}>
+      <Pressable
+        style={({ pressed }) => [styles.bookItem, pressed && styles.pressed]}
+        onPress={openEditor}
+        onLongPress={openActions}
+        delayLongPress={350}
+        accessibilityRole="button"
+        accessibilityLabel={item.title}
+        accessibilityHint="Opens reading details. Long press for quick actions."
+        accessibilityActions={[{ name: "longpress", label: "Quick actions" }]}
+        onAccessibilityAction={(e) => {
+          if (e.nativeEvent.actionName === "longpress") openActions();
+        }}
+      >
         {item.thumbnail ? (
           <Image
             source={{ uri: item.thumbnail }}
@@ -49,12 +73,23 @@ export default function LibraryBookListItem({
               {new Date(item?.createdAt).toLocaleDateString()}
             </Text>
           )}
+          {item.tags && item.tags.length > 0 && (
+            <Text style={styles.tags} numberOfLines={1}>
+              {item.tags.map((t) => `#${t}`).join("  ")}
+            </Text>
+          )}
         </View>
-        {item.status && (
-          <View style={styles.statusContainer}>
-            <StatusBadge status={item.status} />
-          </View>
-        )}
+        <View style={styles.side}>
+          <Pressable
+            onPress={() => setSheetVisible(true)}
+            hitSlop={12}
+            accessibilityRole="button"
+            accessibilityLabel={`Quick actions for ${item.title}`}
+          >
+            <Ionicons name="ellipsis-horizontal" size={20} color="#999" />
+          </Pressable>
+          {item.status && <StatusBadge status={item.status} />}
+        </View>
       </Pressable>
 
       <BookActionSheet
@@ -116,10 +151,18 @@ const styles = StyleSheet.create({
     color: "#a7a7a7",
     fontSize: 12,
   },
-  statusContainer: {
-    marginBottom: 4,
+  side: {
     marginLeft: 12,
-    alignSelf: "flex-end",
+    justifyContent: "space-between",
+    alignItems: "flex-end",
+  },
+  pressed: {
+    opacity: 0.85,
+  },
+  tags: {
+    color: "#8a8f98",
+    fontSize: 12,
+    marginTop: 4,
   },
   status: {
     color: "#1e90ff",

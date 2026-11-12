@@ -45,7 +45,26 @@ export interface DBBook {
   thumbnail?: string | null;
   status: BookStatus;
   createdAt: string;
+  notes?: string | null;
+  /** Tag names, joined from `book_tags`; not a column of `books`. */
+  tags?: string[];
 }
 
 /** Fields needed to insert a book; `id` is assigned by SQLite. */
-export type NewBook = Omit<DBBook, "id">;
+export type NewBook = Omit<DBBook, "id" | "tags">;
+
+/** One read-through of a book. Dates are local calendar days, YYYY-MM-DD. */
+export interface ReadingSession {
+  id: number;
+  bookId: number;
+  startedAt: string | null;
+  finishedAt: string | null;
+}
+
+export type ReadingDates = Pick<ReadingSession, "startedAt" | "finishedAt">;
+
+/** A book as stored in a backup file, with its reading data. */
+export type PortableBook = NewBook & {
+  readings: ReadingDates[];
+  tags: string[];
+};
