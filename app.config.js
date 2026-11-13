@@ -5,7 +5,7 @@ export default {
   expo: {
     name: "leyebrary",
     slug: "leyebrary",
-    version: "1.0.0",
+    version: "1.1.0",
     orientation: "portrait",
     icon: "./assets/images/leyebrary-bg-logo.png",
     scheme: "leyebrary",

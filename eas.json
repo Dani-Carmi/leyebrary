@@ -12,6 +12,7 @@
     },
     "public": {
       "extends": "preview",
+      "environment": "preview",
       "env": {
         "LEYEBRARY_PUBLIC_BUILD": "true",
         "GOOGLE_BOOKS_API_URL": "https://www.googleapis.com/books/v1"
