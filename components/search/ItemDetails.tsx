@@ -21,6 +21,7 @@ import {
   readStatusBorderColor,
 } from "@/utils/styles";
 import { Image } from "expo-image";
+import { truncateText } from "@/utils/text";
 
 const PLACEHOLDER_COVER = require("@/assets/images/image-error.png");
 
@@ -86,10 +87,14 @@ export default function SearchBookItemDetails({
             ) : null}
 
             {book.volumeInfo.publisher ? (
-              <View>
+              <View style={styles.metadataItem}>
                 <Text style={styles.metadataLabel}>Publisher</Text>
-                <Text style={styles.metadataValue}>
-                  {book.volumeInfo?.publisher}
+                <Text
+                  style={styles.metadataValue}
+                  numberOfLines={3}
+                  ellipsizeMode="tail"
+                >
+                  {truncateText(book.volumeInfo?.publisher, 50)}
                 </Text>
               </View>
             ) : null}
@@ -97,10 +102,10 @@ export default function SearchBookItemDetails({
         </View>
 
         <View style={styles.infoContainer}>
-          <Text style={styles.title}>{book.volumeInfo.title}</Text>
+          <Text style={styles.title}>{truncateText(book.volumeInfo.title, 100)}</Text>
 
           {book.volumeInfo.subtitle ? (
-            <Text style={styles.subtitle}>{book.volumeInfo.subtitle}</Text>
+            <Text style={styles.subtitle}>{truncateText(book.volumeInfo.subtitle, 100)}</Text>
           ) : null}
 
           {book.volumeInfo.authors ? (
@@ -221,11 +226,17 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   metadataContainer: {
+    flex: 1,
+    minWidth: 0,
+    marginLeft: 16,
     flexDirection: "column",
     alignItems: "flex-end",
-    flexWrap: "wrap",
     gap: 12,
     marginTop: 5,
+  },
+  metadataItem: {
+    flexDirection: "column",
+    alignItems: "flex-end",
   },
   metadataLabel: {
     fontFamily: "Inter_600SemiBold",

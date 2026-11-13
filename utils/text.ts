@@ -12,3 +12,8 @@ export const normalizeText = (value: string): string =>
 
 export const escapeLike = (value: string): string =>
   value.replace(/[\\%_]/g, (c) => `\\${c}`);
+
+export function truncateText(value: string, length: number): string {
+  if (value.length <= length) return value;
+  return value.substring(0, length) + "...";
+}
